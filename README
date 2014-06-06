@@ -1,0 +1,9 @@
+DEPENDENCIES:
+ - Python 2.7
+ - Django 1.6
+ - cron
+ - Django supported database such as PostgreSQL
+
+Python Modules:
+ - python-crontab
+ - python module for choosen database
