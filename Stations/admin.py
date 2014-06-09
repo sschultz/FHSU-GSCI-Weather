@@ -1,5 +1,5 @@
 from django.contrib import admin
-from stations.models import Station, Sensor
+from Stations.models import Station, Sensor
 
 class StationAdmin(admin.ModelAdmin):
 	prepopulated_fields = {'slug': ('name',)}
