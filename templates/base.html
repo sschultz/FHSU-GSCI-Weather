@@ -1,6 +1,9 @@
+{% load staticfiles %}
 <html>
 <head>
-<title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}Weather Station{% endblock %}</title>
+    <script type="text/javascript" src="{% static "jquery-1.11.1.min.js" %}"></script>
+{% block addionalhead %}{% endblock %}
 </head>
 <body>
 {% block content %} {% endblock %}
