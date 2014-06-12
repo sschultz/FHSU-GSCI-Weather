@@ -108,15 +108,15 @@ class Command(BaseCommand):
             data_unit='mm', height=5, heightUnits='ft', slug='precip')
         precip.save()
 
-        solrad_lp02 = Sensor(name='Solar_rad_LP02_5ft' sensor_type='Rad', station=windfarm,
+        solrad_lp02 = Sensor(name='Solar_rad_LP02_5ft', sensor_type='Rad', station=windfarm,
             description='LP02 Solar Radiation',
             data_unit='Wm^2', height=5, heightUnits='ft', slug='rad-lp02')
-        solrad.save()
+        solrad_lp02.save()
 
-        solrad = Sensor(name='Solar_Rad_NR2_5ft', sensor_type='Rad', station=windfarm,
+        solrad_nr2 = Sensor(name='Solar_Rad_NR2_5ft', sensor_type='Rad', station=windfarm,
             description='Solar Radiation',
             data_unit='Wm^2', height=5, heightUnits='ft', slug='rad-nr2')
-        solrad.save()
+        solrad_nr2.save()
 
     def UpdateNow(self):
         print("TODO: Windfarm.UpdateNow()")
