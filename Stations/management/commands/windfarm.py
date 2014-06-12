@@ -25,12 +25,14 @@ class Command(BaseCommand):
             self.UpdateNow()
 
     def CreateWindfarm(self):
+        #Create database station entry
         windfarm = Station('Windfarm',
             'FHSU Weather tower next to the SuperDARN',
             'windfarm', '',
             '2013-07-10', True, '', 600)
         windfarm.save()
 
+        #Enter all sensor information
         bat = Sensor(name='Batt_Volt_Min', sensor_type='Bat', station=windfarm,
             description='Battery minimum voltage reading',
             data_unit='V', slug='batt')
@@ -68,7 +70,7 @@ class Command(BaseCommand):
 
         wd_sd = Sensor(name='WD_200P_59m_SD',sensor_type='WD', station=windfarm,
             description='Wind Direction at 59m from ground',
-            data_unit='rad', height=59, heightUnits='m', slug='WD-sd')
+            data_unit='rad', height=59, heightUnits='m', slug='wd-sd')
         wd_sd.save()
 
         wd_wvt = Sensor(name='WD_200P_49m_WVT',sensor_type='WD', station=windfarm,
@@ -86,8 +88,35 @@ class Command(BaseCommand):
             data_unit='C', height=10, heightUnits='ft', slug='tmp10')
         tmp10.save()
 
-#       PTemp_C,WS_C1_60m_Prim_Avg,WS_C1_60m_Prim_Max,WS_C1_60m_Prim_Min,WS_C1_60m_Prim_Std,WS_C1_60m_Redun_Avg,WS_C1_60m_Redun_Max,WS_C1_60m_Redun_Min,WS_C1_60m_Redun_Std,WS_C1_50m_Prim_Avg,WS_C1_50m_Prim_Max,WS_C1_50m_Prim_Min,WS_C1_50m_Prim_Std,WS_C1_40m_Prim_Avg,WS_C1_40m_Prim_Max,WS_C1_40m_Prim_Min,WS_C1_40m_Prim_Std,WS_C1_40m_Redun_Avg,WS_C1_40m_Redun_Max,WS_C1_40m_Redun_Min,WS_C1_40m_Redun_Std,WS_C1_10m_Prim_Avg,WS_C1_10m_Prim_Max,WS_C1_10m_Prim_Min,WS_C1_10m_Prim_Std,WD_200P_59m_WVT,WD_200P_59m_SD,WD_200P_49m_WVT,WD_200P_49m_SD,Tmp_110S_5ft_Avg,Tmp_110S_5ft_Max,Tmp_110S_5ft_Min,Tmp_110S_5ft_Std,Tmp_110S_10ft_Avg,Tmp_110S_10ft_Max,Tmp_110S_10ft_Min,Tmp_110S_10ft_Std,RH_RH5_5ft_Avg,RH_RH5_5ft_Max,RH_RH5_5ft_Min,RH_RH5_5ft_Std,RH_RH5_10ft_Avg,RH_RH5_10ft_Max,RH_RH5_10ft_Min,RH_RH5_10ft_Std,BP_BP20_5ft_Avg,BP_BP20_5ft_Max,BP_BP20_5ft_Min,BP_BP20_5ft_Std,Precip_NVL_5ft_Tot,Solar_Rad_LP02_5ft_Avg,Solar_Rad_LP02_5ft_Max,Solar_Rad_LP02_5ft_Min,Solar_Rad_LP02_5ft_Std,Solar_Rad_LP02_5ft_Tot,Solar_Rad_NR2_5ft_Avg,Solar_Rad_NR2_5ft_Max,Solar_Rad_NR2_5ft_Min,Solar_Rad_NR2_5ft_Std,Solar_Rad_NR2_5ft_Tot
+        rh5 = Sensor(name='RH_RH5_5ft', sensor_type='RH', station=windfarm,
+            description='Relative Humidity at 5ft from ground',
+            data_unit='%', height=5, heightUnits='ft', slug='rh5')
+        rh5.save()
 
+        rh10 = Sensor(name='RH_RH5_10ft', sensor_type='RH', station=windfarm,
+            description='Relative Humidity at 10ft from ground',
+            data_unit='%', height=10, heightUnits='ft', slug='rh10')
+        rh10.save()
+
+        bp = Sensor(name='BP_BP20_5ft', sensor_type='BP', station=windfarm,
+            description='Barometric Pressure',
+            data_unit='kPa', height=5, heightUnits='ft', slug='bp')
+        bp.save()
+
+        precip = Sensor(name='Precip_NVL_5ft', sensor_type='Precip', station=windfarm,
+            description='Precipitation',
+            data_unit='mm', height=5, heightUnits='ft', slug='precip')
+        precip.save()
+
+        solrad_lp02 = Sensor(name='Solar_rad_LP02_5ft' sensor_type='Rad', station=windfarm,
+            description='LP02 Solar Radiation',
+            data_unit='Wm^2', height=5, heightUnits='ft', slug='rad-lp02')
+        solrad.save()
+
+        solrad = Sensor(name='Solar_Rad_NR2_5ft', sensor_type='Rad', station=windfarm,
+            description='Solar Radiation',
+            data_unit='Wm^2', height=5, heightUnits='ft', slug='rad-nr2')
+        solrad.save()
 
     def UpdateNow(self):
         print("TODO: Windfarm.UpdateNow()")
