@@ -24,7 +24,7 @@ SENSOR_TYPE = (
 )
 
 class Station(models.Model):
-    name            = models.CharField(max_length=254)
+    name            = models.CharField(max_length=254, help_text="Spaces are not allowed. The name should match the field name of the imported data.")
     description = models.TextField(blank=True)
     slug            = models.SlugField(primary_key=True)
     location        = models.TextField(blank=True)
