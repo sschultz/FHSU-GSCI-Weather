@@ -23,6 +23,14 @@ SENSOR_TYPE = (
     ('Bat',    'Battery'),
 )
 
+VALUE_TYPE = (
+    ('AVG', 'Average'),
+    ('TOT', 'Total'),
+    ('MIN', 'Minimum'),
+    ('MAX', 'Maximum'),
+    ('STD', 'Standard Deviation'),
+)
+
 class Station(models.Model):
     name            = models.CharField(max_length=254, help_text="Spaces are not allowed. The name should match the field name of the imported data.")
     description = models.TextField(blank=True)
@@ -43,7 +51,7 @@ class Sensor(models.Model):
     station   = models.ForeignKey(Station)
     data_unit = models.CharField(max_length=10)
     height    = models.IntegerField(null=True, blank=True)
-    heightUnits = models.CharField(max_length=2, choices=DISTANCE_UNITS, blank=True)
+    height_unit = models.CharField(max_length=2, choices=DISTANCE_UNITS, blank=True)
     slug      = models.SlugField()
 
     def __unicode__(self):
@@ -52,22 +60,25 @@ class Sensor(models.Model):
     class META:
         unique_together = (('slug','station'),('name','station'),)
 
-class SensorData(models.Model):
+class SensorRecord(models.Model):
     sensor    = models.ForeignKey(Sensor)
     timestamp = models.DateTimeField(db_index=True)
-    avg       = models.FloatField(help_text="Average value over interval measured")
+    
+    val       = models.FloatField(help_text="Average value or Total value over interval measured")
 
     def __unicode__(self):
-        return self.avg
+        return self.timestamp
 
     class META:
         unique_together = (('sensor','timestamp'),)
 
-#For sensor data that records minimum and maximum readings over an interval
-class SensorStatData(SensorData):
-    min_val = models.FloatField()
-    max_val = models.FloatField()
-    std     = models.FloatField()
+class SensorData(models.Model):
+    record = models.ForeignKey(SensorRecord)
+    val_type = models.CharField(max_length = 3, choices=VALUE_TYPE)
+    val = models.FloatField()
 
-class SensorStatTotalData(SensorStatData):
-    total = models.FloatField()
+    def __unicode__(self):
+        return unicode(self.val)
+
+    class META:
+        unique_together = (('record','val_type'),)

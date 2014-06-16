@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
-from Stations.models import Station, Sensor, SensorData, SensorStatData, SensorStatTotalData
+from Stations.models import Station, Sensor
 
 class Command(BaseCommand):
     help = 'Manage FHSU Windfarm dataset'
@@ -40,82 +40,82 @@ class Command(BaseCommand):
 
         ws60prim = Sensor(name='WS_C1_60m_Prim',sensor_type='WS', station=windfarm,
             description='Wind Speed at 60m',
-            data_unit='m/s', height=60, heightUnits='m', slug='ws60')
+            data_unit='m/s', height=60, height_unit='m', slug='ws60')
         ws60prim.save()
 
         ws60redun = Sensor(name='WS_C1_60m_Redun',sensor_type='WS', station=windfarm,
             description='Redundant Wind Speed Sensor at 60m',
-            data_unit='m/s', height=60, heightUnits='m', slug='ws60redun')
+            data_unit='m/s', height=60, height_unit='m', slug='ws60redun')
         ws60redun.save()
 
         ws50prim = Sensor(name='WS_C1_50m_Prim',sensor_type='WS', station=windfarm,
             description='Wind Speed at 50m',
-            data_unit='m/s', height=50, heightUnits='m', slug='ws50')
+            data_unit='m/s', height=50, height_unit='m', slug='ws50')
         ws50prim.save()
         
         ws40prim = Sensor(name='WS_C1_40m_Prim',sensor_type='WS', station=windfarm,
             description='Wind Speed at 40m',
-            data_unit='m/s', height=40, heightUnits='m', slug='ws40')
+            data_unit='m/s', height=40, height_unit='m', slug='ws40')
         ws40prim.save()
 
         ws40redun = Sensor(name='WS_C1_40m_Redun',sensor_type='WS', station=windfarm,
             description='Redundant Wind Speed Sensor at 40m',
-            data_unit='m/s', height=40, heightUnits='m', slug='ws40redun')
+            data_unit='m/s', height=40, height_unit='m', slug='ws40redun')
         ws40redun.save()
 
         ws10prim = Sensor(name='WS_C1_10_Prim',sensor_type='WS', station=windfarm,
             description='Wind Speed at 10m',
-            data_unit='m/s', height=10, heightUnits='m', slug='ws10')
+            data_unit='m/s', height=10, height_unit='m', slug='ws10')
         ws10prim.save()
 
         wd_sd = Sensor(name='WD_200P_59m_SD',sensor_type='WD', station=windfarm,
             description='Wind Direction at 59m from ground',
-            data_unit='rad', height=59, heightUnits='m', slug='wd-sd')
+            data_unit='rad', height=59, height_unit='m', slug='wd-sd')
         wd_sd.save()
 
         wd_wvt = Sensor(name='WD_200P_49m_WVT',sensor_type='WD', station=windfarm,
             description='Wind Direction at 49m from ground',
-            data_unit='rad', height=49, heightUnits='m', slug='wd-wvt')
+            data_unit='rad', height=49, height_unit='m', slug='wd-wvt')
         wd_wvt.save()
 
         tmp5 = Sensor(name='Tmp_110S_5ft', sensor_type='Temp', station=windfarm,
             description='Temperature at 5ft from ground',
-            data_unit='C', height=5, heightUnits='ft', slug='tmp5')
+            data_unit='C', height=5, height_unit='ft', slug='tmp5')
         tmp5.save()
 
         tmp10 = Sensor(name='Tmp_110S_10ft', sensor_type='Temp', station=windfarm,
             description='Temperature at 10ft from ground',
-            data_unit='C', height=10, heightUnits='ft', slug='tmp10')
+            data_unit='C', height=10, height_unit='ft', slug='tmp10')
         tmp10.save()
 
         rh5 = Sensor(name='RH_RH5_5ft', sensor_type='RH', station=windfarm,
             description='Relative Humidity at 5ft from ground',
-            data_unit='%', height=5, heightUnits='ft', slug='rh5')
+            data_unit='%', height=5, height_unit='ft', slug='rh5')
         rh5.save()
 
         rh10 = Sensor(name='RH_RH5_10ft', sensor_type='RH', station=windfarm,
             description='Relative Humidity at 10ft from ground',
-            data_unit='%', height=10, heightUnits='ft', slug='rh10')
+            data_unit='%', height=10, height_unit='ft', slug='rh10')
         rh10.save()
 
         bp = Sensor(name='BP_BP20_5ft', sensor_type='BP', station=windfarm,
             description='Barometric Pressure',
-            data_unit='kPa', height=5, heightUnits='ft', slug='bp')
+            data_unit='kPa', height=5, height_unit='ft', slug='bp')
         bp.save()
 
         precip = Sensor(name='Precip_NVL_5ft', sensor_type='Precip', station=windfarm,
             description='Precipitation',
-            data_unit='mm', height=5, heightUnits='ft', slug='precip')
+            data_unit='mm', height=5, height_unit='ft', slug='precip')
         precip.save()
 
         solrad_lp02 = Sensor(name='Solar_rad_LP02_5ft', sensor_type='Rad', station=windfarm,
             description='LP02 Solar Radiation',
-            data_unit='Wm^2', height=5, heightUnits='ft', slug='rad-lp02')
+            data_unit='Wm^2', height=5, height_unit='ft', slug='rad-lp02')
         solrad_lp02.save()
 
         solrad_nr2 = Sensor(name='Solar_Rad_NR2_5ft', sensor_type='Rad', station=windfarm,
             description='Solar Radiation',
-            data_unit='Wm^2', height=5, heightUnits='ft', slug='rad-nr2')
+            data_unit='Wm^2', height=5, height_unit='ft', slug='rad-nr2')
         solrad_nr2.save()
 
     def UpdateNow(self):

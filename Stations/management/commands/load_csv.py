@@ -50,6 +50,10 @@ class Command(BaseCommand):
         except:
             raise CommandError('Unknown station name: "'+args[0]+'" - Station name is case sensitive')
 
+        sensors = models.Sensor.objects.filter(station=station)
+        if len(sensors) == 0:
+            raise CommandError('Must have at least one sensor on ' + args[0])
+
         colNames = None
         if options['fieldnames']:
             colNames = [field.strip() for field in options['fieldnames'].split(',')]
@@ -102,11 +106,8 @@ class Command(BaseCommand):
             else:
                 reader = DictReader(f, fieldnames=colNames, dialect=d)
 
-            #deturmine what type of sensor data is present for each sensor
-            sensorDataType = {}
-
             #begin reading CSV file data
             for row in reader:
                 #for every field in row and it's assiciated column name
                 for field, column in row.items():
-                    models.SensorData()
+                    models.SensorRecord
