@@ -61,8 +61,16 @@ class Command(BaseCommand):
         if options['mapfile']:
             with open(options['mapfile']) as f:
                 buf = f.read()
+                #remove trailing whitespace like extra new lines
+                buf = buf.strip()
+                #convert buf string in to a dictionary relating CSV columns to sensor names
                 mapping = buf.split('\n')
-                #mapping = maping.split('->')
+                mapping = [x.split('->') for x in mapping]
+                mapping = [[x.strip(),y.strip()] for x,y in mapping]
+                #mapping list should be like [ [col1,field1], [col2,field2], ... ]
+                #this list can be converted to a dictionary where mapping['col1'] returns 'field1'
+                mapping = dict(mapping)
+        #mapping will either be None or a dictionary of column names to field names
 
         with open(args[1],'r') as f:
             #detect position of first character for starting line (default: 0)
@@ -94,6 +102,11 @@ class Command(BaseCommand):
             else:
                 reader = DictReader(f, fieldnames=colNames, dialect=d)
 
+            #deturmine what type of sensor data is present for each sensor
+            sensorDataType = {}
+
             #begin reading CSV file data
             for row in reader:
-                pass
+                #for every field in row and it's assiciated column name
+                for field, column in row.items():
+                    models.SensorData()
