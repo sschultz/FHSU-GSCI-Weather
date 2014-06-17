@@ -60,25 +60,14 @@ class Sensor(models.Model):
     class META:
         unique_together = (('slug','station'),('name','station'),)
 
-class SensorRecord(models.Model):
-    sensor    = models.ForeignKey(Sensor)
-    timestamp = models.DateTimeField(db_index=True)
-    
-    val       = models.FloatField(help_text="Average value or Total value over interval measured")
-
-    def __unicode__(self):
-        return self.timestamp
-
-    class META:
-        unique_together = (('sensor','timestamp'),)
-
 class SensorData(models.Model):
-    record = models.ForeignKey(SensorRecord)
+    timestamp = models.DateTimeField(db_index=True)
+    sensor = models.ForeignKey(Sensor)
     val_type = models.CharField(max_length = 3, choices=VALUE_TYPE)
     val = models.FloatField()
 
     def __unicode__(self):
-        return unicode(self.val)
+        return self.sensor.name+u':'+self.val_type + u'@' + unicode(self.timestamp) +u' = '+unicode(self.val)
 
     class META:
-        unique_together = (('record','val_type'),)
+        unique_together = (('timestamp','sensor','val_type'),)
