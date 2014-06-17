@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, include, url
-from Stations.views import SensorView
 
 from django.contrib import admin
 admin.autodiscover()
@@ -10,6 +9,6 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'Stations.views.homepage'),
-    url(r'^Stations/.*', SensorView.as_view()),
+    url(r'^$', 'Stations.views.homepageView'),
+    url(r'^Stations/(?P<station>.+)/(?P<sensor>.+)/$', 'Stations.views.sensorView'),
 )
