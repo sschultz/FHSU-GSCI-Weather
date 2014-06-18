@@ -7,3 +7,4 @@ DEPENDENCIES:
 Python Modules:
  - python-crontab
  - python module for choosen database
+ - python-dateutil

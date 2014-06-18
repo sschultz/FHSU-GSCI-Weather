@@ -6,9 +6,10 @@
 <script>
 $(function() {
     $('#graph').highcharts({
-        series : [{
+        series: [{
             data: [{{ data }}]
-            }]
+            }],
+        xAxis: { type: 'datetime' }
     });
 });
 </script>

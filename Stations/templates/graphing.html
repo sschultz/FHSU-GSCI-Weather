@@ -4,4 +4,11 @@
 {% block addionalhead %}
     <script src="{% static "highcharts.js" %}"></script>
     <script src="{% static "modules/exporting.js" %}"></script>
+<script>
+$(function() {
+    Highcharts.setOptions({
+        global: { useUTC: false }
+    });
+})
+</script>
 {% endblock %}
