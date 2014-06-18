@@ -2,10 +2,14 @@
 <html>
 <head>
     <title>{% block title %}Weather Station{% endblock %}</title>
-    <script type="text/javascript" src="{% static "jquery-1.11.1.min.js" %}"></script>
+    <link href="{% static "css/ui-lightness/jquery-ui-1.10.4.custom.css" %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static "js/jquery-1.10.2.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-ui-1.10.4.custom.min.js" %}"></script>
 {% block addionalhead %}{% endblock %}
 </head>
 <body>
+{% block pre-content %} {% endblock %}
 {% block content %} {% endblock %}
+{% block post-content %} {% endblock %}
 </body>
 </html>

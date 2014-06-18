@@ -12,3 +12,25 @@ $(function() {
 })
 </script>
 {% endblock %}
+
+{% block pre-content %}
+<div id='range'>
+    Timeframe:
+    <input type="text" id="start-date" style="width:6em">
+    <input type="text" id="end-date" style="width:6em">
+    <button type="button" onclick="eventRange()">Update</button>
+
+<script>
+$(function() {
+    start = new Date();
+    end = new Date();
+
+    start.setDate(start.getDate() - 1);
+    $('#start-date').datepicker();
+    $('#start-date').val((start.getMonth()+1)+'/'+start.getDate()+'/'+start.getFullYear());
+    $('#end-date').datepicker();
+    $('#end-date').val((end.getMonth()+1)+'/'+end.getDate()+'/'+end.getFullYear());
+})
+</script>
+</div>
+{% endblock %}

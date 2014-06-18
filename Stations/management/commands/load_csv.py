@@ -38,6 +38,11 @@ class Command(BaseCommand):
                 type='int',
                 default=0,
                 help='Skip n number of lines before reading CSV file'),
+            make_option('--timestamp-field',
+                action='store',
+                dest='timestamp',
+                default='',
+                help='The name of the field that will be used as the timestamp for the whole record. The default is to use the first column in the CSV file as the timestamp.'),
         )
 
     def handle(self, *args, **options):
@@ -106,8 +111,30 @@ class Command(BaseCommand):
             else:
                 reader = DictReader(f, fieldnames=colNames, dialect=d)
 
+            #set timestamp to first field if it hasn't been manually specified
+            ts_field = ''
+            if options['timestamp']:
+                ts_field = options['timestamp']
+                if not (ts_field in colNames):
+                    raise CommandError(ts_field+' is not found in CSV field name list.')
+            else:
+                ts_field = colNames[0]
+
+            #generate sensor and value_type maping dictionaries
+            for col in colNames:
+                #ignore timestamp column
+                if col == ts_field:
+                    continue
+                re.find
+
             #begin reading CSV file data
             for row in reader:
+                #read the timestamp and prepair a data record
+                ts = row[ts_field]
+                del row[ts_field]
+
                 #for every field in row and it's assiciated column name
                 for field, column in row.items():
-                    models.SensorRecord
+                    dat = models.SensorData(timestamp = ts, sensor=sensormap[column], val_type=typemap[column], val=float(field))
+                    dat.save()
+

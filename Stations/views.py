@@ -23,7 +23,7 @@ def sensorView(request, station='', sensor=''):
     data = models.SensorData.objects.filter(sensor=sensor_obj, timestamp__gte=last2days)
     datastr = ''
     for record in data:
-        ts = timestamp(record.timestamp)*1000
+        ts = timestamp(record.timestamp)*1000 #highcharts uses unix timestamp in milliseconds
         datastr = datastr + "[{},{}],".format(int(ts), record.val)
     return render(request, "sensor.html", {'data':datastr})
 
