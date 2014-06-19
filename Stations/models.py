@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.db import models
 
 DISTANCE_UNITS = (
@@ -41,7 +42,7 @@ class Station(models.Model):
     contact         = models.EmailField(max_length=254, blank=True)
     logger_interval = models.IntegerField(help_text="Sensor Readings per Second")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class Sensor(models.Model):
@@ -54,7 +55,7 @@ class Sensor(models.Model):
     height_unit = models.CharField(max_length=2, choices=DISTANCE_UNITS, blank=True)
     slug      = models.SlugField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
     class META:
@@ -66,8 +67,8 @@ class SensorData(models.Model):
     val_type = models.CharField(max_length = 3, choices=VALUE_TYPE)
     val = models.FloatField()
 
-    def __unicode__(self):
-        return self.sensor.name+u':'+self.val_type + u'@' + unicode(self.timestamp) +u' = '+unicode(self.val)
+    def __str__(self):
+        return self.sensor.name+':'+self.val_type + '@' + str(self.timestamp) +' = '+str(self.val)
 
     class META:
         unique_together = (('timestamp','sensor','val_type'),)
