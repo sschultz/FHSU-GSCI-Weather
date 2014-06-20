@@ -1,6 +1,64 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+
+{% block additional-head %}
+    <script src="{% static "highcharts.js" %}"></script>
+    <script src="{% static "modules/exporting.js" %}"></script>
+<script>
+$(function() {
+    Highcharts.setOptions({
+        global: { useUTC: false }
+    });
+})
+</script>
+{% endblock %}
 
 {% block content %}
-<h1>Test</h1>
-<p>paragraph tag</p>
+<div id='weather-content'>
+    <div id='weather-heading'>
+        Hays Weather Conditions<br/>
+    </div>
+    <div id='date'>{{asof}}</div><br/>
+    <table>
+        <tr><td><div id='temp'>{{curtemp}}</div></td>
+        <td>
+        <div id='readings'>
+            <table>
+                <tr><td><div id='mlabel'>Relative Humidity:</div></td></tr>
+                <tr><td><div id='mlabel'>Pressure:</div></td></tr>
+                <tr><td><div id='mlabel'>Wind:</div></td></tr>
+                <tr><td><div id='mlabel'>Precipitation:</div></td></tr>
+            </table>
+        </div>
+        </td></tr>
+    </table>
+</div>
+<div id="Temp-Graph" style="width: 580px; height: 250px; margin: 0 4px 3px"></div>
+<script>
+$(function () {
+    $('#Temp-Graph').highcharts({
+        title: {text: 'Temperature'},
+        chart: {zoomType: 'x'},
+        series: [{
+            data: [{{tempdata}}]
+            }],
+        xAxis: {
+            title: {text: 'Date/Time (GMT -6)'},
+            type: 'datetime'
+        },
+        yAxis: {
+            allowDecimals: false,
+            title: {text: 'Temperature (°F)'},
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+        }]},
+        tooltip: {valueSuffix: '°F'},
+        legend: {enabled: false},
+        credits: {enabled: false}
+    });
+})
+</script>
+<div id='cams'></div>
 {% endblock %}
