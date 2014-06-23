@@ -10,6 +10,13 @@
 {% block additional-head %}{% endblock %}
 </head>
 <body>
+{% block navbar %}<div id='navbar'>
+<table>
+    <tr>
+        <td><a href="{% url 'homepage-view' %}">home</a></td>
+    </tr>
+</table>
+</div>{% endblock%}
 {% block pre-content %} {% endblock %}
 {% block content %} {% endblock %}
 {% block post-content %} {% endblock %}
