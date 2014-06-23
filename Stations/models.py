@@ -54,6 +54,7 @@ class Sensor(models.Model):
     height    = models.IntegerField(null=True, blank=True)
     height_unit = models.CharField(max_length=2, choices=DISTANCE_UNITS, blank=True)
     slug      = models.SlugField()
+    frontPage   = models.BooleanField(default=False,help_text="Will display on the station's front page by default")
 
     def __str__(self):
         return self.slug

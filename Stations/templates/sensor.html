@@ -1,16 +1,17 @@
 {% extends "graphing.html" %}
 
 {% block content %}
-    <div id="graph" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-    
+{% for sensor in sensors %}
+<div id="{{sensor.divtagid}}" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+{%endfor %}
+
+{% autoescape off %}
 <script>
 $(function() {
-    $('#graph').highcharts({
-        series: [{
-            data: [{{ data }}]
-            }],
-        xAxis: { type: 'datetime' }
-    });
+{% for sensor in sensors %}
+    $('#{{sensor.divtagid}}').highcharts({{sensor.JSON}});
+{% endfor %}
 });
 </script>
+{% endautoescape %}
 {% endblock %}

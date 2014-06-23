@@ -65,7 +65,7 @@ class Command(BaseCommand):
 
         ws10prim = Sensor(name='WS_C1_10_Prim',sensor_type='WS', station=windfarm,
             description='Wind Speed at 10m',
-            data_unit='m/s', height=10, height_unit='m', slug='ws10')
+            data_unit='m/s', height=10, height_unit='m', slug='ws10', frontPage=True)
         ws10prim.save()
 
         wd_sd = Sensor(name='WD_200P_59m_SD',sensor_type='WD', station=windfarm,
@@ -80,7 +80,7 @@ class Command(BaseCommand):
 
         tmp5 = Sensor(name='Tmp_110S_5ft', sensor_type='Temp', station=windfarm,
             description='Temperature at 5ft from ground',
-            data_unit='C', height=5, height_unit='ft', slug='tmp5')
+            data_unit='C', height=5, height_unit='ft', slug='tmp5', frontPage=True)
         tmp5.save()
 
         tmp10 = Sensor(name='Tmp_110S_10ft', sensor_type='Temp', station=windfarm,
@@ -100,7 +100,7 @@ class Command(BaseCommand):
 
         bp = Sensor(name='BP_BP20_5ft', sensor_type='BP', station=windfarm,
             description='Barometric Pressure',
-            data_unit='kPa', height=5, height_unit='ft', slug='bp')
+            data_unit='kPa', height=5, height_unit='ft', slug='bp', frontPage=True)
         bp.save()
 
         precip = Sensor(name='Precip_NVL_5ft', sensor_type='Precip', station=windfarm,

@@ -10,5 +10,6 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls), name='admin-view'),
     url(r'^$', 'Stations.views.homepageView', name='homepage-view'),
+    url(r'^stations/$', 'Stations.views.sensorView', name='station-view'),
     url(r'^Stations/(?P<station>.+)/(?P<sensor>.+)/$', 'Stations.views.sensorView'),
 )
