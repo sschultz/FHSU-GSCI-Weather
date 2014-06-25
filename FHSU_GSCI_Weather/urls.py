@@ -12,5 +12,5 @@ urlpatterns = patterns('',
     url(r'^$', 'Stations.views.homepageView', name='homepage-view'),
     url(r'^stations/$', 'Stations.views.sensorView', name='station-view'),
     url(r'^stations/(?P<station>.+)/(?P<sensor>.+)/$', 'Stations.views.sensorView'),
-    url(r'^graph/(?P<station>.+)/$', Stations.views.highchartView, name='chart-view'),
+    url(r'^graph/(?P<station>.+)/$', 'Stations.views.highchartView', name='chart-view'),
 )

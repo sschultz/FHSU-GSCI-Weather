@@ -14,12 +14,13 @@ $(function() {
 {% endblock %}
 
 {% block pre-content %}
+<div id='sidebar-handle'><table class="sidebar-handle-table"><tr><td>&gt;&gt;</td></tr></table></div>
 <div id='range'>
     Timeframe:
     <input type="text" id="start-date" style="width:6em">
     <input type="text" id="end-date" style="width:6em">
     <button type="button" onclick="eventRange()">Update</button>
-
+</div>
 <script>
 $(function() {
     start = new Date();

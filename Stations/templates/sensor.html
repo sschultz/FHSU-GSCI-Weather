@@ -1,9 +1,11 @@
 {% extends "graphing.html" %}
 
 {% block content %}
+<div id="graphs">
 {% for sensor in sensors %}
-<div id="{{sensor.divtagid}}" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-{%endfor %}
+<div id="{{sensor.divtagid}}" class="sensor-graph"></div>
+{% endfor %}
+</div>
 
 {% autoescape off %}
 <script>
