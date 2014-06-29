@@ -10,7 +10,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls), name='admin-view'),
     url(r'^$', 'Stations.views.homepageView', name='homepage-view'),
-    url(r'^stations/$', 'Stations.views.sensorView', name='station-view'),
-    url(r'^stations/(?P<station>.+)/(?P<sensor>.+)/$', 'Stations.views.sensorView'),
-    url(r'^graph/(?P<station>.+)/$', 'Stations.views.highchartView', name='chart-view'),
+    url(r'^stations/$', 'Stations.views.stationView', name='station-view'),
+    #url(r'^stations/(?P<station>.+)/(?P<sensor>.+)/$', 'Stations.views.sensorView'),
+    url(r'^graph/(?P<station>.+)/$', 'Stations.views.highchartView', name='graph-view'),
 )

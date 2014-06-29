@@ -15,5 +15,15 @@ $(function() {
 {% endfor %}
 });
 </script>
+
+<div id="test"></div>
+<script>
+$(function() {
+    var arg = '["ws50", "ws10"]'
+    $.post("{% url 'graph-view' 'Windfarm' %}",arg ,function(data) {
+        $("#test").html(data);
+    });
+});
+</script>
 {% endautoescape %}
 {% endblock %}

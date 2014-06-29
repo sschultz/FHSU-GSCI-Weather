@@ -61,7 +61,8 @@ def highchartView(request, station=''):
     if station_obj == None:
         return HttpResponseNotFound('<h1>Unable to find station</h1>')
 
-    sensor_list = json.loads(request.body)
+    request_str = request.body.decode()
+    sensor_list = json.loads(request_str)
 
     #check if sensor_list is a list and it contains at least one item
     if not type(sensor_list) is list and len(sensor_list) > 0:
@@ -72,9 +73,12 @@ def highchartView(request, station=''):
     for sensor in sensor_list:
         if not type(sensor) is str:
             return HttpResponseBadRequest('<h1>Invalid Request: One item in list is not a string</h1>')
-        s_obj = models.Sensor.objects.get(station=station, slug=sensor)
-        #sensor not found, goto next sensor
-        if s_obj == None:
+        s_obj = None
+        try:
+            s_obj = models.Sensor.objects.get(station=station_obj, slug=sensor)
+        except:
+            #sensor not found, goto next sensor
+            #print("Sensor: '" + sensor + "' Not Found")
             continue
         #sensor found, append to list
         sensor_objs.append(s_obj)
@@ -82,7 +86,7 @@ def highchartView(request, station=''):
     
     return HttpResponse(names, content_type="text/plain")
 
-def sensorView(request, station='', sensors=[]):
+def stationView(request, station='', sensors=[]):
     station_obj_all = models.Station.objects.all()
     station_obj = None
     #first try if no station specified then choose a default
@@ -103,7 +107,7 @@ def sensorView(request, station='', sensors=[]):
     
     #if station is not found then return default station page
     if station_obj == None:
-        return sensorView(request)
+        return stationView(request)
 
     #get all sensors on this station
     sensor_objs = models.Sensor.objects.filter(station=station_obj)
@@ -121,12 +125,12 @@ def sensorView(request, station='', sensors=[]):
     #if no sensor matches list of sensor names
     #then return default station page
     if len(curSensors) == 0:
-        return sensorView(request)
+        return stationView(request)
 
     #Create a list of dictionary items containing JSON code and tag names for
     #each sensors being displayed 
     sensor_data = sensorDataFromObjs(curSensors)
-    return render(request, "sensor.html",
+    return render(request, "station.html",
             {'stations':station_obj_all, 'sensors':sensor_data})
 
 def homepageView(request):
