@@ -1,5 +1,5 @@
 DEPENDENCIES:
- - Python 2.7
+ - Python
  - Django 1.6
  - cron
  - Django supported database such as PostgreSQL
