@@ -1,21 +1,24 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from optparse import make_option
 from Stations.models import Station, Sensor
+
 
 class Command(BaseCommand):
     help = 'Manage FHSU Windfarm dataset'
 
     option_list = BaseCommand.option_list + (
         make_option('--create',
-            action='store_true',
-            dest='create',
-            default=False,
-            help='Create station and sensors related to the windfarm station'),
+                    action='store_true',
+                    dest='create',
+                    default=False,
+                    help='Create station and sensors related to the windfarm '
+                    'station'),
         make_option('--update-now',
-            action='store_true',
-            dest='update-now',
-            default=False,
-            help='Connect to the windfarm datalogger and download any data since most recent data timestamp')
+                    action='store_true',
+                    dest='update-now',
+                    default=False,
+                    help='Connect to the windfarm datalogger and download '
+                    'any data since most recent data timestamp')
         )
 
     def handle(self, *args, **options):
@@ -27,22 +30,25 @@ class Command(BaseCommand):
     def CreateWindfarm(self):
         #Create database station entry
         windfarm = Station('Windfarm',
-            'FHSU Weather tower next to the SuperDARN',
-            'windfarm', '',
-            '2013-07-10', True, '', 600)
+                           'FHSU Weather tower next to the SuperDARN',
+                           'windfarm', '',
+                           '2013-07-10', True, '', 600)
         windfarm.save()
 
         #Enter all sensor information
         bat = Sensor(name='Batt_Volt_Min', sensor_type='Bat', station=windfarm,
-            description='Battery minimum voltage reading',
-            data_unit='V', slug='batt')
+                     description='Battery minimum voltage reading',
+                     data_unit='V', slug='batt')
         bat.save()
 
-        ws60prim = Sensor(name='WS_C1_60m_Prim',sensor_type='WS', station=windfarm,
-            description='Wind Speed at 60m',
-            data_unit='m/s', height=60, height_unit='m', slug='ws60')
+        ws60prim = Sensor(name='WS_C1_60m_Prim', sensor_type='WS',
+                          station=windfarm,
+                          description='Wind Speed at 60m',
+                          data_unit='m/s', height=60, height_unit='m',
+                          slug='ws60')
         ws60prim.save()
 
+#needs reformatted as per pep8
         ws60redun = Sensor(name='WS_C1_60m_Redun',sensor_type='WS', station=windfarm,
             description='Redundant Wind Speed Sensor at 60m',
             data_unit='m/s', height=60, height_unit='m', slug='ws60redun')

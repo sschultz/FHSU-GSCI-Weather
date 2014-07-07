@@ -78,7 +78,8 @@ def highchartView(request, station=''):
     names = ''
     for sensor in sensor_list:
         if not type(sensor) is str:
-            return HttpResponseBadRequest('<h1>Invalid Request: One item in list is not a string</h1>')
+            return HttpResponseBadRequest('<h1>Invalid Request: One item '
+                                          'in list is not a string</h1>')
         s_obj = None
         try:
             s_obj = models.Sensor.objects.get(station=station_obj, slug=sensor)
@@ -104,7 +105,8 @@ def stationView(request, station='', sensors=[]):
                 #no default station found, fall back on first loaded station
                 station_obj = models.Station.objects.all()[0]
                 if station_obj is None:
-                    return HttpResponseNotFound('<h1>Default station not found</h1>')
+                    return HttpResponseNotFound('<h1>Default station not '
+                                                'found</h1>')
         except:
             #if ...objects.all() returns None
             #then ...objects.all()[0] will cause an exception
@@ -151,4 +153,5 @@ def homepageView(request):
     tmp_data = dataFromLast2Days(tmp_sensor_obj)
     tmp_data_str = sensorData2HighchartsData(tmp_data, celcius2fahrenheit)
     return render(request, "index.html",
-                  {'asof': '3:30 PM', 'curtemp': '80', 'tempdata': tmp_data_str})
+                  {'asof': '3:30 PM', 'curtemp': '80',
+                   'tempdata': tmp_data_str})

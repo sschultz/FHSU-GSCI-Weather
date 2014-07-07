@@ -1,12 +1,14 @@
 from django.contrib import admin
 from Stations.models import Station, Sensor
 
+
 class StationAdmin(admin.ModelAdmin):
-	prepopulated_fields = {'slug': ('name',)}
+    prepopulated_fields = {'slug': ('name',)}
+
 
 class SensorAdmin(admin.ModelAdmin):
-	prepopulated_fields = {'slug': ('sensor_type','height',)}
+        repopulated_fields = {'slug': ('sensor_type', 'height',)}
 
 # Register your models here.
 admin.site.register(Station, StationAdmin)
-admin.site.register(Sensor, SensorAdmin) 
+admin.site.register(Sensor, SensorAdmin)
