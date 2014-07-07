@@ -29,7 +29,7 @@ def sensorData2HighchartsData(data_rec, converter=None):
     return datastr
 
 
-def sensorDataFromObjs(sensor_objs):
+def JSONhighchartFromObjs(sensor_objs):
     sensors = []
     for sensor in sensor_objs:
         data = dataFromLast2Days(sensor)
@@ -56,42 +56,33 @@ def sensorDataFromObjs(sensor_objs):
     return sensors
 
 
-def highchartView(request, station=''):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'],
-                                      '<h1>405: ResponseNotAllowed</h1>')
+def highchartView(request, station='', sensor=''):
     if station == '':
         return HttpResponseNotFound('<h1>Unable to find station</h1>')
+    if sensor == '':
+        return HttpResponseNotFound('<h1>Unable to find sensor on ' +
+                                    station + '</h1>')
+
     #get station object
-    station_obj = models.Station.objects.get(name=station)
+    station_obj = None
+    try:
+        station_obj = models.Station.objects.get(name=station)
+    except:
+        return HttpResponseNotFound('<h1>Unable to find station</h1>')
+
     if station_obj is None:
         return HttpResponseNotFound('<h1>Unable to find station</h1>')
 
-    request_str = request.body.decode()
-    sensor_list = json.loads(request_str)
+    #get sensor object
+    sen_obj = None
+    try:
+        sen_obj = models.Sensor.objects.get(station=station_obj, slug=sensor)
+    except:
+        return HttpResponseNotFound('<h1>Unable to find sensor</h1>')
 
-    #check if sensor_list is a list and it contains at least one item
-    if not type(sensor_list) is list and len(sensor_list) > 0:
-        return HttpResponseBadRequest('<h1>Invalid Request</h1>')
+    JSONstr = JSONhighchartFromObjs(sen_obj)
 
-    sensor_objs = []
-    names = ''
-    for sensor in sensor_list:
-        if not type(sensor) is str:
-            return HttpResponseBadRequest('<h1>Invalid Request: One item '
-                                          'in list is not a string</h1>')
-        s_obj = None
-        try:
-            s_obj = models.Sensor.objects.get(station=station_obj, slug=sensor)
-        except:
-            #sensor not found, goto next sensor
-            #print("Sensor: '" + sensor + "' Not Found")
-            continue
-        #sensor found, append to list
-        sensor_objs.append(s_obj)
-        names = names + s_obj.name + ", "
-
-    return HttpResponse(names, content_type="text/plain")
+    return HttpResponse(JSONstr, content_type="text/plain")
 
 
 def stationView(request, station='', sensors=[]):
@@ -140,7 +131,7 @@ def stationView(request, station='', sensors=[]):
 
     #Create a list of dictionary items containing JSON code and tag names for
     #each sensors being displayed
-    sensor_data = sensorDataFromObjs(curSensors)
+    sensor_data = JSONhighchartFromObjs(curSensors)
     return render(request, "station.html",
                   {'stations': station_obj_all, 'sensors': sensor_data})
 

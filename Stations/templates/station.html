@@ -19,8 +19,7 @@ $(function() {
 <div id="test"></div>
 <script>
 $(function() {
-    var arg = '["ws50", "ws10"]'
-    $.post("{% url 'graph-view' 'Windfarm' %}",arg ,function(data) {
+    $.get("{% url 'graph-view' 'Windfarm' 'ws10' %}", function(data) {
         $("#test").html(data);
     });
 });
