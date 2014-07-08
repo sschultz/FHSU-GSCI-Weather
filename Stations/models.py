@@ -29,7 +29,7 @@ VALUE_TYPE = (
     ('TOT', 'Total'),
     ('MIN', 'Minimum'),
     ('MAX', 'Maximum'),
-    ('STD', 'Standard Deviation'),
+    ('SD', 'Standard Deviation'),
 )
 
 

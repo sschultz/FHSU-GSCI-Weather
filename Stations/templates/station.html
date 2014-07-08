@@ -1,21 +1,27 @@
 {% extends "graphing.html" %}
 
-{% block content %}
-<div id="graphs">
-{% for sensor in sensors %}
-<div id="{{sensor.divtagid}}" class="sensor-graph"></div>
-{% endfor %}
-</div>
-
+{% block init-head %}
 {% autoescape off %}
 <script>
 $(function() {
-{% for sensor in sensors %}
-    $('#{{sensor.divtagid}}').highcharts({{sensor.JSON}});
-{% endfor %}
+    $.getJSON("{% url 'station-front-list' selStation.slug %}", function(sensors) {
+        for (var i in sensors) {
+            $("#graphs").append($("<div id="+sensors[i]+"></div>"));
+            $.getJSON("{% url 'graph-view' selStation.slug 999 %}".replace(999, sensors[i]),
+                function(opts) {
+                    $("#"+sensors[i]).highcharts(opts);
+                });
+            }
+    });
 });
 </script>
+{% endautoescape %}
+{% endblock %}
 
+{% block content %}
+<div id="graphs"></div>
+
+{% autoescape off %}
 <div id="test"></div>
 <script>
 $(function() {
