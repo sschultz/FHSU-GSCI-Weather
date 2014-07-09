@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 from django.db import models
+from django.core.exceptions import ValidationError
 
 DISTANCE_UNITS = (
     ('mm', 'Millimeters'),
     ('cm', 'Centimeters'),
-    ('m' , 'Meters'),
+    ('m', 'Meters'),
     ('km', 'Kilometers'),
     ('NM', 'Nautical Miles'),
     ('in', 'Inches'),
@@ -19,6 +20,7 @@ SENSOR_TYPE = (
     ('WD',     'Wind Direction'),
     ('Pres',   'Pressure'),
     ('RH',     'Relative Humidity'),
+    ('BP',     'Barometric Pressure'),
     ('Precip', 'Percipitation'),
     ('Rad',    'Solar Radiation'),
     ('Bat',    'Battery'),
@@ -29,7 +31,7 @@ VALUE_TYPE = (
     ('TOT', 'Total'),
     ('MIN', 'Minimum'),
     ('MAX', 'Maximum'),
-    ('SD', 'Standard Deviation'),
+    ('STD', 'Standard Deviation'),
 )
 
 
@@ -68,8 +70,13 @@ class Sensor(models.Model):
     def __str__(self):
         return self.slug
 
-    class META:
-        unique_together = (('slug', 'station'), ('name', 'station'),)
+    def validate_unique(self, exclude=None):
+        objs = Sensor.objects.filter(
+            name=self.name,
+            station=self.station)
+        if len(objs) > 0:
+            raise ValidationError('Another sensor with name "' + self.name +
+                                  '" already exists on ' + self.station.name)
 
 
 class SensorData(models.Model):
@@ -82,5 +89,13 @@ class SensorData(models.Model):
         return self.sensor.name+':'+self.val_type + '@' + \
             str(self.timestamp) + ' = '+str(self.val)
 
-    class META:
-        unique_together = (('timestamp', 'sensor', 'val_type'),)
+    def validate_unique(self, exclude=None):
+        objs = SensorData.objects.filter(
+            timestamp=self.timestamp,
+            sensor=self.sensor,
+            val_type=self.val_type)
+        if len(objs) > 0:
+            raise ValidationError("Overlapping data at same time '" +
+                                  self.timestamp + "' on sensor " +
+                                  self.sensor.name +
+                                  ' (' + self.sensor.slug + ')')

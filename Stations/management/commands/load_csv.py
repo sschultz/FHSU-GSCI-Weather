@@ -117,7 +117,6 @@ class Command(BaseCommand):
                 mapping[col] = col_sensor
         #mapping will either be None or a dictionary of
         #column names to sensor field names
-        print(mapping)
         return mapping
 
     def getTSField(self, options, colNames):
@@ -155,7 +154,7 @@ class Command(BaseCommand):
             match = r.search(col)
             #if no match is found then default to type average
             if match:
-                typemap[col] = col[match.start()+1:]
+                typemap[col] = col[match.start()+1:].upper()
             else:
                 print('Warning: '+col+' has unknown value type')
                 typemap[col] = 'AVG'
@@ -219,10 +218,12 @@ class Command(BaseCommand):
 
             #begin reading CSV file data
             count = 0
+            nrows = 0
             for row in reader:
                 #read the timestamp and prepair a data record
                 ts = row[ts_field]
                 del row[ts_field]
+                nrows += 1
 
                 #for every field in row and it's assiciated column name
                 for column, field in row.items():
@@ -235,9 +236,11 @@ class Command(BaseCommand):
                             sensor=sensormap[column],
                             val_type=typemap[column],
                             val=float(field))
+                        dat.full_clean()
                         dat.save()
+                        count += 1
                     except:
-                        print("Row " + str(column.index) + ", Column " +
+                        print("Time: " + str(ts) + ", Column: " +
                               column + " failed to load")
-                count += 1
-            print("Added " + count + " Rows")
+            print("Added " + str(count) + " data entries from " +
+                  str(nrows) + " rows")
