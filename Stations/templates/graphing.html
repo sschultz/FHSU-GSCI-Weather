@@ -9,6 +9,15 @@ $(function() {
     Highcharts.setOptions({
         global: { useUTC: false }
     });
+    var start = new Date();
+    var end = new Date();
+    var fmt = "yy-mm-dd";
+
+    start.setDate(start.getDate() - 2);
+    $('#start-date').datepicker({dateFormat: "m-d-yy" });
+    $('#start-date').val((start.getMonth()+1)+'-'+ start.getDate()+'-'+start.getFullYear());
+    $('#end-date').datepicker({ dateFormat: "m-d-yy" });
+    $('#end-date').val((end.getMonth()+1)+'-'+ end.getDate()+'-'+end.getFullYear());
 })
 </script>
 
@@ -24,19 +33,7 @@ $(function() {
     <input type="text" id="start-date" style="width:6em">
     -
     <input type="text" id="end-date" style="width:6em">
-    <button type="button" onclick="eventRange()">Update</button>
+    <button type="button" id="update-btn">Update</button>
 </div>
-<script>
-$(function() {
-    start = new Date();
-    end = new Date();
-
-    start.setDate(start.getDate() - 1);
-    $('#start-date').datepicker();
-    $('#start-date').val((start.getMonth()+1)+'/'+start.getDate()+'/'+start.getFullYear());
-    $('#end-date').datepicker();
-    $('#end-date').val((end.getMonth()+1)+'/'+end.getDate()+'/'+end.getFullYear());
-})
-</script>
 </div>
 {% endblock %}

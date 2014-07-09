@@ -3,17 +3,27 @@
 {% block init-head %}
 {% autoescape off %}
 <script>
+var curStation = '{{selStation.slug}}';
+var sensorList = JSON.parse('{{default_sensor_list}}');
 $(function() {
-    $.getJSON("{% url 'station-front-list' selStation.slug %}", function(sensors) {
-        for (var i in sensors) {
-            $("#graphs").append($("<div id="+sensors[i]+"></div>"));
-            $.getJSON("{% url 'graph-view' selStation.slug '999' %}".replace('999', sensors[i]),
-                function(opts) {
-                    var chart = new Highcharts.Chart(opts);
-                });
-            }
-    });
-})
+    update();
+    $('#update-btn').click(update);
+});
+function update() {
+    var start = $("#start-date").datepicker("getDate");
+    var end = $("#end-date").datepicker("getDate");
+    for (var i in sensorList) {
+        $("#graphs").append($("<div id="+sensorList[i]+"></div>"));
+        $.getJSON("{% url 'graph-view' '888' '999' %}"
+            .replace('999', sensorList[i])
+            .replace('888', curStation) + 
+            "?start=" + (start.getMonth()+1)+"-"+start.getDate()+'-'+start.getFullYear() +
+            "&end=" + (end.getMonth()+1)+"-"+end.getDate()+'-'+end.getFullYear(), 
+            function(opts) {
+                var chart = new Highcharts.Chart(opts);
+            });
+    }
+}
 </script>
 {% endautoescape %}
 {% endblock %}

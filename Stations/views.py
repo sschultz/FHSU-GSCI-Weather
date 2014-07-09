@@ -44,7 +44,7 @@ def defaultSensorView(request, station):
 
 
 def highchartView(request, station, sensor):
-    fmt = '%Y-%m-%d'
+    fmt = '%m-%d-%Y'
     station = station.lower()
     sensor = sensor.lower()
 
@@ -120,8 +120,16 @@ def stationView(request, station=''):
     if len(curSensors) == 0:
         return stationView(request)
 
+    sensor_list = models.Sensor.objects.filter(station=station_obj,
+                                               frontPage=True)
+    #convert from a list of objects to a JSON array
+    sensor_list = [sensor.slug for sensor in sensor_list]
+    sensor_list = json.dumps(sensor_list)
+
     return render(request, "station.html",
-                  {'stations': station_obj_all, 'selStation': station_obj})
+                  {'stations': station_obj_all,
+                   'selStation': station_obj,
+                   'default_sensor_list': sensor_list})
 
 
 def homepageView(request):
