@@ -21,14 +21,4 @@ $(function() {
 {% block content %}
 <div id="graphs"></div>
 
-{% autoescape off %}
-<div id="test"></div>
-<script>
-$(function() {
-    $.get("{% url 'graph-view' 'Windfarm' 'ws10' %}", function(data) {
-        $("#test").html(data);
-    });
-})
-</script>
-{% endautoescape %}
 {% endblock %}
