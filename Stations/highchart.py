@@ -42,6 +42,8 @@ def optionsFromObj(sensor_obj, start=None, end=None, maxpoints=500):
     highchart_args = {}
     highchart_args['title'] = {'text': sensor_obj.description}
 
+    chart = {'renderTo': sensor_obj.slug}
+
     xAxis = {'text': "Date/Time"}
     xAxis['type'] = "datetime"
 
@@ -51,6 +53,7 @@ def optionsFromObj(sensor_obj, start=None, end=None, maxpoints=500):
     series['data'] = [[d_obj.timestamp.timestamp()*1000,
                        d_obj.val] for d_obj in data]
 
+    highchart_args['chart'] = chart
     highchart_args['xAxis'] = xAxis
     highchart_args['yAxis'] = yAxis
     highchart_args['series'] = [series]

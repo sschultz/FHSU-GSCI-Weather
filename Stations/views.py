@@ -44,6 +44,7 @@ def defaultSensorView(request, station):
 
 
 def highchartView(request, station, sensor):
+    fmt = '%Y-%m-%d'
     station = station.lower()
     sensor = sensor.lower()
 
@@ -64,7 +65,23 @@ def highchartView(request, station, sensor):
     except:
         return HttpResponseNotFound('<h1>Unable to find sensor</h1>')
 
-    JSONstr = highchart.optionsFromObj(sen_obj)
+    #generate start end dates from incoming GET string paramiters
+    try:
+        start = request.GET.get('start', None)
+        start = datetime.strptime(start, fmt)
+    except:
+        start = None
+    #only evalueate end if start is set (not None)
+    if start is not None:
+        try:
+            end = request.GET.get('end', None)
+            end = datetime.strptime(end, fmt)
+        except:
+            end = None
+    else:
+        end = None
+
+    JSONstr = highchart.optionsFromObj(sen_obj, start=start, end=end)
 
     return HttpResponse(JSONstr, content_type="text/plain")
 

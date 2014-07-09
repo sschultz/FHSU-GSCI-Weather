@@ -7,13 +7,13 @@ $(function() {
     $.getJSON("{% url 'station-front-list' selStation.slug %}", function(sensors) {
         for (var i in sensors) {
             $("#graphs").append($("<div id="+sensors[i]+"></div>"));
-            $.getJSON("{% url 'graph-view' selStation.slug 999 %}".replace(999, sensors[i]),
+            $.getJSON("{% url 'graph-view' selStation.slug '999' %}".replace('999', sensors[i]),
                 function(opts) {
-                    $("#"+sensors[i]).highcharts(opts);
+                    var chart = new Highcharts.Chart(opts);
                 });
             }
     });
-});
+})
 </script>
 {% endautoescape %}
 {% endblock %}
@@ -28,7 +28,7 @@ $(function() {
     $.get("{% url 'graph-view' 'Windfarm' 'ws10' %}", function(data) {
         $("#test").html(data);
     });
-});
+})
 </script>
 {% endautoescape %}
 {% endblock %}
