@@ -1,8 +1,11 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
 from optparse import make_option
 from csv import Sniffer, DictReader
 import Stations.models as models
+from sys import stdout
 import re
+import math
 
 
 class Command(BaseCommand):
@@ -149,7 +152,6 @@ class Command(BaseCommand):
                 sensormap[col] = models.Sensor.objects.get(name=mapping[col])
             except:
                 print("Warning: Ignoreing "+col+" column")
-                sensormap[col] = None
 
             match = r.search(col)
             #if no match is found then default to type average
@@ -160,6 +162,7 @@ class Command(BaseCommand):
                 typemap[col] = 'AVG'
         return sensormap, typemap
 
+    @transaction.atomic
     def handle(self, *args, **options):
         if len(args) != 2:
             raise CommandError('Must only have 2 argurments '
@@ -219,15 +222,20 @@ class Command(BaseCommand):
             #begin reading CSV file data
             count = 0
             nrows = 0
+            dat_list = []
             for row in reader:
                 #read the timestamp and prepair a data record
                 ts = row[ts_field]
                 del row[ts_field]
                 nrows += 1
+                if nrows % 10 == 0:
+                    stdout.write("%d rows read          \r" % (nrows))
+                    stdout.flush()
 
                 #for every field in row and it's assiciated column name
                 for column, field in row.items():
-                    if sensormap[column] is None:
+                    if column not in sensormap or \
+                       not math.isfinite(float(field)):
                         continue
 
                     try:
@@ -236,11 +244,31 @@ class Command(BaseCommand):
                             sensor=sensormap[column],
                             val_type=typemap[column],
                             val=float(field))
+
                         dat.full_clean()
-                        dat.save()
+                        dat_list.append(dat)
                         count += 1
+
+                    except KeyboardInterrupt as k:
+                        raise k
                     except:
-                        print("Time: " + str(ts) + ", Column: " +
-                              column + " failed to load")
+                        print("Failed to load %s @ %s    " % (column, ts))
+
+            print()
+            print("Saveing to database...")
+            count = 0
+            try:
+                with transaction.atomic():
+                    for dat in dat_list:
+                        dat.save()
+                        if count % 100 == 0:
+                            stdout.write('%d data entries saved        \r' %
+                                         (count))
+                            stdout.flush()
+                        count += 1
+            except KeyboardInterrupt:
+                print("Aborted (Nothing saved)                ")
+                return
+            print()
             print("Added " + str(count) + " data entries from " +
                   str(nrows) + " rows")
