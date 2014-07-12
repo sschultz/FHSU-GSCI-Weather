@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
 from Stations.models import Station, Sensor
 
@@ -29,13 +29,17 @@ class Command(BaseCommand):
 
     def CreateWindfarm(self):
         #Create database station entry
-        windfarm = Station('Windfarm',
-                           'FHSU Weather tower next to the SuperDARN',
-                           'windfarm', '',
-                           '2013-07-10', True, '', 600)
+        try:
+            windfarm = Station('Windfarm',
+                               'FHSU Weather tower next to the SuperDARN',
+                               'windfarm', '',
+                               '2013-07-10', True, '', 600)
 
-        windfarm.full_clean()
-        windfarm.save()
+            windfarm.full_clean()
+            windfarm.save()
+        except:
+            raise CommandError("Unable to create 'Windfarm' station. "
+                               "Perhapse it already exists?")
 
         #Enter all sensor information
         bat = Sensor(name='Batt_Volt_Min', sensor_type='Bat', station=windfarm,
@@ -54,7 +58,7 @@ class Command(BaseCommand):
         ws60prim.save()
 
 #needs reformatted as per pep8
-        ws60redun = Sensor(name='WS_C1_60m_Redun',sensor_type='WS', station=windfarm,
+        ws60redun = Sensor(name='WS_C1_60m_Redun', sensor_type='WS', station=windfarm,
             description='Redundant Wind Speed Sensor at 60m',
             data_unit='m/s', height=60, height_unit='m', slug='ws60redun')
 
@@ -150,6 +154,8 @@ class Command(BaseCommand):
             data_unit='Wm^2', height=5, height_unit='ft', slug='rad-nr2')
         solrad_nr2.full_clean()
         solrad_nr2.save()
+
+        print("Windfarm station created")
 
     def UpdateNow(self):
         print("TODO: Windfarm.UpdateNow()")
