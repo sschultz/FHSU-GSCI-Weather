@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.core.exceptions import DoesNotExist
 from optparse import make_option
-from Stations.models import Station, Sensor
+from Stations.models import Station, Sensor, SensorData
+from pycampbellcr1000 import CR1000
 
 
 class Command(BaseCommand):
@@ -158,4 +160,38 @@ class Command(BaseCommand):
         print("Windfarm station created")
 
     def UpdateNow(self):
-        print("TODO: Windfarm.UpdateNow()")
+        addr = "tcp:ip:port"
+        print("UNFINISHED: TODO")
+        return
+
+        try:
+            start = SensorData.objects.latest('timestamp').timestamp
+        except DoesNotExist:
+            print("No prevouse data records found.")
+            print("Downloading all logger data...")
+            device = CR1000.from_url(addr)
+            dataList = device.get_data('Ten_Min')
+        else:
+            print("Beginning download of all data recorded since " +
+                  str(start))
+            device = CR1000.from_url(addr)
+            dataList = device.get_data('Ten_Min', start)
+
+        toSaveList = []
+        for record in dataList:
+            ts = record['TIMESTAMP']
+            del record['TIMESTAMP']
+            for val, col in record.items():
+                try:
+                    dat = SensorData(
+                        sensor=None,
+                        timestamp=ts,
+                        val_type=None,
+                        val=float(val))
+                    dat.full_clean()
+                    toSaveList.append(dat)
+                except:
+                    continue
+
+        for dat in toSaveList:
+            dat.save()
