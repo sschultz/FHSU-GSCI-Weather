@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from django.core.exceptions import DoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from optparse import make_option
 from Stations.models import Station, Sensor, SensorData
 from pycampbellcr1000 import CR1000
