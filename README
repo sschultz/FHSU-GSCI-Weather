@@ -7,3 +7,4 @@ DEPENDENCIES:
 Python Modules:
  - python-crontab
  - python module for choosen database
+ - pycampbellcr1000 for campbell data logger support
