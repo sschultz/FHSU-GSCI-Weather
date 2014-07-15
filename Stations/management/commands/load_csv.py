@@ -234,8 +234,11 @@ class Command(BaseCommand):
 
                 #for every field in row and it's assiciated column name
                 for column, field in row.items():
-                    if column not in sensormap or \
-                       not math.isfinite(float(field)):
+                    try:
+                        if column not in sensormap or \
+                           not math.isfinite(float(field)):
+                            continue
+                    except:
                         continue
 
                     try:
