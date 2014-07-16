@@ -44,9 +44,9 @@ class Command(BaseCommand):
                                "Perhapse it already exists?")
 
         #Enter all sensor information
-        bat = Sensor(name='Batt_Volt_Min', sensor_type='Bat', station=windfarm,
-                     description='Battery minimum voltage reading',
-                     data_unit='V', slug='batt')
+        bat = Sensor(name='Batt_Volt', sensor_type='Bat', station=windfarm,
+                     description='Battery voltage reading',
+                     data_unit='V', slug='battery')
         bat.full_clean()
         bat.save()
 
@@ -94,19 +94,19 @@ class Command(BaseCommand):
         ws10prim.full_clean()
         ws10prim.save()
 
-        wd_sd = Sensor(name='WD_200P_59m_SD',sensor_type='WD', station=windfarm,
-            description='Wind Direction at 59m from ground',
-            data_unit='rad', height=59, height_unit='m', slug='wd-sd')
+        wd59 = Sensor(name='WD_200P_59m',sensor_type='WD', station=windfarm,
+            description='Wind Direction at 59m from the ground',
+            data_unit='deg', height=59, height_unit='m', slug='wd59')
 
-        wd_sd.full_clean()
-        wd_sd.save()
+        wd59.full_clean()
+        wd59.save()
 
-        wd_wvt = Sensor(name='WD_200P_49m_WVT',sensor_type='WD', station=windfarm,
-            description='Wind Direction at 49m from ground',
-            data_unit='rad', height=49, height_unit='m', slug='wd-wvt')
+        wd49 = Sensor(name='WD_200P_49m',sensor_type='WD', station=windfarm,
+            description='Wind Direction at 49m from the ground',
+            data_unit='deg', height=49, height_unit='m', slug='wd49')
 
-        wd_wvt.full_clean()
-        wd_wvt.save()
+        wd49.full_clean()
+        wd49.save()
 
         tmp5 = Sensor(name='Tmp_110S_5ft', sensor_type='Temp', station=windfarm,
             description='Temperature at 5ft from ground',
@@ -166,7 +166,7 @@ class Command(BaseCommand):
 
         try:
             start = SensorData.objects.latest('timestamp').timestamp
-        except DoesNotExist:
+        except ObjectDoesNotExist:
             print("No prevouse data records found.")
             print("Downloading all logger data...")
             device = CR1000.from_url(addr)

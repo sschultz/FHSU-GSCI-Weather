@@ -7,12 +7,21 @@ from sys import stdout
 import re
 import math
 
+#Assocciate any abreviated val_types with their model friendly type
+#example: Any type SD will be changed to the type STD in the database
+EXTRA_TYPES = {
+    'SD': 'STD',
+    'WVT': 'AVG'
+}
+
 
 class Command(BaseCommand):
     args = '<StationName filename>'
     help = 'Loads station sensor data from a CSV file.  If --mapfile is not '
     'specified then the CSV file header (first line of CSV file) must '
     'contain matching sensor names belonging to specified station.'
+
+    regmatcher = None
 
     option_list = BaseCommand.option_list + (
         make_option(
@@ -101,16 +110,8 @@ class Command(BaseCommand):
             #when no mapping is provided, just map column name to itself
             mapping = {}
 
-            #generate regular expression to cut out type meta
-            re_str = '[\s_-]('
-            re_str += '(' + models.VALUE_TYPE[0][0] + ')'
-            for v_type in models.VALUE_TYPE[1:]:
-                re_str += '|(' + v_type[0] + ')'
-            re_str += ')$'
-            r = re.compile(re_str, flags=re.IGNORECASE)
-
             for col in colNames:
-                match = r.search(col)
+                match = self.regmatcher.search(col)
                 #if no match then use whole col name
                 if match:
                     col_sensor = col[:match.start()]
@@ -137,26 +138,27 @@ class Command(BaseCommand):
         sensormap = {}
         typemap = {}
 
-        re_str = '[\s_-]('
-        re_str += '(' + models.VALUE_TYPE[0][0] + ')'
-        for v_type in models.VALUE_TYPE[1:]:
-            re_str += '|(' + v_type[0] + ')'
-        re_str += ')$'
-        r = re.compile(re_str, flags=re.IGNORECASE)
-
         for col in colNames:
             if col.lower() == ts_field.lower():
                 continue
 
             try:
                 sensormap[col] = models.Sensor.objects.get(name=mapping[col])
-            except:
+            except Exception as e:
                 print("Warning: Ignoreing "+col+" column")
+                print("\t" + str(e))
 
-            match = r.search(col)
+            match = self.regmatcher.search(col)
             #if no match is found then default to type average
             if match:
-                typemap[col] = col[match.start()+1:].upper()
+                #get the type in col
+                col_type = col[match.start()+1:].upper()
+                #if col_type is an extra type then remap it to an actual model
+                #type
+                if col_type in EXTRA_TYPES:
+                    col_type = EXTRA_TYPES[col_type]
+
+                typemap[col] = col_type
             else:
                 print('Warning: '+col+' has unknown value type')
                 typemap[col] = 'AVG'
@@ -180,6 +182,16 @@ class Command(BaseCommand):
             raise CommandError('Must have at least one sensor on ' + args[0])
 
         colNames = self.getColNames(options)
+
+        #Compile a regex for identifing type in CSV column names
+        re_str = '[\s_-]('
+        re_str += '(' + models.VALUE_TYPE[0][0] + ')'
+        for v_type in models.VALUE_TYPE[1:]:
+            re_str += '|(' + v_type[0] + ')'
+        for v_type in EXTRA_TYPES:
+            re_str += '|(' + v_type + ')'
+        re_str += ')$'
+        self.regmatcher = re.compile(re_str, flags=re.IGNORECASE)
 
         with open(args[1], 'r') as f:
             #detect position of first character for starting line (default: 0)
