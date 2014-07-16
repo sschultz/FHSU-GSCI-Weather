@@ -6,6 +6,7 @@ from pycampbellcr1000 import CR1000
 
 
 class Command(BaseCommand):
+    """A manage.py command for managing the windfarm data"""
     help = 'Manage FHSU Windfarm dataset'
 
     option_list = BaseCommand.option_list + (
@@ -30,7 +31,7 @@ class Command(BaseCommand):
             self.UpdateNow()
 
     def CreateWindfarm(self):
-        #Create database station entry
+        """Create database station entry with all applicable sensors"""
         try:
             windfarm = Station('Windfarm',
                                'FHSU Weather tower next to the SuperDARN',
