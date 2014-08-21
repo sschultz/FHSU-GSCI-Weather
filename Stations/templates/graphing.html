@@ -18,6 +18,24 @@ $(function() {
     $('#start-date').val((start.getMonth()+1)+'-'+ start.getDate()+'-'+start.getFullYear());
     $('#end-date').datepicker({ dateFormat: "m-d-yy" });
     $('#end-date').val((end.getMonth()+1)+'-'+ end.getDate()+'-'+end.getFullYear());
+
+    $('#sidebar-panel').jstree({
+		 		'core' : {
+					'data' : [
+		 				'Simple root node',
+		 				{
+		 					'id' : 'node_2',
+		 					'text' : 'Root node with options',
+		 					'state' : { 'opened' : true, 'selected' : true },
+		 					'children' : [ { 'text' : 'Child 1' }, 'Child 2']
+		 				}
+		 			]
+		 		});
+		 	
+    $('#sidebar-handle').click( function(evnt) {
+            $('#sidebar-panel').animate({width: 'toggle'});
+        }
+    );
 })
 </script>
 
@@ -27,7 +45,8 @@ $(function() {
 {% endblock %}
 
 {% block pre-content %}
-<div id='sidebar-handle'><table class="sidebar-handle-table"><tr><td>&gt;&gt;</td></tr></table></div>
+<div id='sidebar-panel'></div>
+<div id='sidebar-handle' ><table class="sidebar-handle-table"><tr><td>&gt;&gt;</td></tr></table></div>
 <div id='range'>
     Timeframe:
     <input type="text" id="start-date" style="width:6em">
