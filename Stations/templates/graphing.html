@@ -4,7 +4,19 @@
 {% block additional-head %}
     <script src="{% static "highcharts.js" %}"></script>
     <script src="{% static "modules/exporting.js" %}"></script>
+    <script src="{% static "js/jstree.js" %}"></script>
 <script>
+function expand(evnt) {
+    $('#sidebar-panel').show(0);
+    $('#sidebar-panel').animate({width: '200px'});
+    $('#sidebar-handle').one('click',shrink);
+}
+function shrink(evnt) {
+    $('#sidebar-panel').animate({width: '0px'}, 400, "swing", function(){
+        $('#sidebar-panel').hide(0);
+    });
+    $('#sidebar-handle').one('click',expand);
+}
 $(function() {
     Highcharts.setOptions({
         global: { useUTC: false }
@@ -19,23 +31,15 @@ $(function() {
     $('#end-date').datepicker({ dateFormat: "m-d-yy" });
     $('#end-date').val((end.getMonth()+1)+'-'+ end.getDate()+'-'+end.getFullYear());
 
-    $('#sidebar-panel').jstree({
-		 		'core' : {
-					'data' : [
-		 				'Simple root node',
-		 				{
-		 					'id' : 'node_2',
-		 					'text' : 'Root node with options',
-		 					'state' : { 'opened' : true, 'selected' : true },
-		 					'children' : [ { 'text' : 'Child 1' }, 'Child 2']
-		 				}
-		 			]
-		 		});
-		 	
-    $('#sidebar-handle').click( function(evnt) {
-            $('#sidebar-panel').animate({width: 'toggle'});
-        }
-    );
+    $('#sidebar-handle').one('click', expand);
+    $('#sidebar-panel').jstree({'core' : {
+                                    'data' : [{
+                                            'text' : 'Root node with options',
+                                            'state' : { 'opened' : true, 'selected' : true },
+                                            'children' : ['Child 1', 'Child 2']
+                                    }]
+                                }});
+
 })
 </script>
 
@@ -45,8 +49,10 @@ $(function() {
 {% endblock %}
 
 {% block pre-content %}
-<div id='sidebar-panel'></div>
-<div id='sidebar-handle' ><table class="sidebar-handle-table"><tr><td>&gt;&gt;</td></tr></table></div>
+<div id='sidebar'>
+    <div id='sidebar-panel'></div>
+    <div id='sidebar-handle' >&gt;&gt;</div>
+</div>
 <div id='range'>
     Timeframe:
     <input type="text" id="start-date" style="width:6em">
