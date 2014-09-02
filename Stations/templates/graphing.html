@@ -10,12 +10,14 @@ function expand(evnt) {
     $('#sidebar-panel').show(0);
     $('#sidebar-panel').animate({width: '200px'});
     $('#sidebar-handle').one('click',shrink);
+    $('#sidebar-handle').text('<<');
 }
 function shrink(evnt) {
     $('#sidebar-panel').animate({width: '0px'}, 400, "swing", function(){
         $('#sidebar-panel').hide(0);
     });
     $('#sidebar-handle').one('click',expand);
+    $('#sidebar-handle').text('>>');
 }
 $(function() {
     Highcharts.setOptions({
@@ -31,6 +33,7 @@ $(function() {
     $('#end-date').datepicker({ dateFormat: "m-d-yy" });
     $('#end-date').val((end.getMonth()+1)+'-'+ end.getDate()+'-'+end.getFullYear());
 
+	$('#sidebar-panel').hide(0);
     $('#sidebar-handle').one('click', expand);
     $('#sidebar-panel').jstree({'core' : {
                                     'data' : [{
