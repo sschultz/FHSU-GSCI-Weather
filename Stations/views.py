@@ -18,15 +18,36 @@ def stationListView(request):
         station = {}
         station['name'] = station_obj.slug
 
-        sensors = []
-        for sensor_obj in models.Sensor.objects.filter(station=station_obj):
-            sensors.append(sensor_obj.slug)
+        sensors = [sensor_obj.slug for sensor_obj in
+                   models.Sensor.objects.filter(station=station_obj)]
 
         station['sensors'] = sensors
         stations.append(station)
 
     JSONstr = json.dumps(stations)
-    return HttpResponse(JSONstr, content_type="text/plain")
+    return HttpResponse(JSONstr, content_type="application/json")
+
+
+def stationTree(request):
+    node_id = request.GET.get('id')
+    if node_id == '#':
+        root_children = []
+        for station in models.Station.objects.all():
+            child = {}
+            child['text'] = station.name
+            child['state'] = {'opened': True}
+
+            #get types
+            
+            child['children'] = [sensor.get_sensor_type_display() for sensor \
+                                 in models.Sensor.objects.\
+                                 distinct('sensor_type')]
+
+            root_children.append(child)
+
+        nodes = {'children': root_children, 'id': node_id}
+
+    return HttpResponse(json.dumps(nodes), content_type="application/json")
 
 
 def defaultSensorView(request, station):
@@ -39,8 +60,7 @@ def defaultSensorView(request, station):
     for sensor in sensor_objs:
         sensors.append(sensor.slug)
 
-    JSONstr = json.dumps(sensors)
-    return HttpResponse(JSONstr, content_type="text/plain")
+    return HttpResponse(json.dumps(sensors), content_type="application/json")
 
 
 def highchartView(request, station, sensor):
@@ -83,7 +103,7 @@ def highchartView(request, station, sensor):
 
     JSONstr = highchart.optionsFromObj(sen_obj, start=start, end=end)
 
-    return HttpResponse(JSONstr, content_type="text/plain")
+    return HttpResponse(JSONstr, content_type="application/json")
 
 
 def stationView(request, station=''):

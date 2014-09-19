@@ -56,12 +56,12 @@ WSGI_APPLICATION = 'FHSU_GSCI_Weather.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-#WARNING: Change the DBMS to something more robust (like PostgreSQL) for deployment
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'weather',
+        'USER': 'webdev',
+        'HOST': ''
     }
 }
 

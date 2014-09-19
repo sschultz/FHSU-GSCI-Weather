@@ -17,4 +17,5 @@ urlpatterns = patterns(
         name='station-front-list'),
     url(r'^(?i)graph/(?P<station>.+)/(?P<sensor>.+)/$',
         'Stations.views.highchartView', name='graph-view'),
+    url(r'^(?i)station-tree/$','Stations.views.stationTree', name='station-tree'),
 )
