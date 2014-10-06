@@ -2,9 +2,10 @@ DEPENDENCIES:
  - Python
  - Django 1.6
  - cron
- - Django supported database such as PostgreSQL
+ - PostgreSQL 
 
 Python Modules:
  - python-crontab
  - python module for choosen database
  - pycampbellcr1000 for campbell data logger support
+ - postgresql_psycopg2

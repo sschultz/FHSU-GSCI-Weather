@@ -30,23 +30,49 @@ def stationListView(request):
 
 def stationTree(request):
     node_id = request.GET.get('id')
+    #if root node (build tree base/trunk)
+    root_children = []
     if node_id == '#':
-        root_children = []
         for station in models.Station.objects.all():
+            #create a folder for each station
             child = {}
             child['text'] = station.name
             child['state'] = {'opened': True}
-
-            #get types
             
-            child['children'] = [sensor.get_sensor_type_display() for sensor \
-                                 in models.Sensor.objects.\
-                                 distinct('sensor_type')]
+            #for each station create a subfolder for each type of sensor
+            children = []
+            all_sensors = models.Sensor.objects.filter(station=station)
+            all_sensors_distinct_types = [sensor.sensor_type for sensor in
+                            all_sensors.distinct('sensor_type')]
 
+            sensor_type_full_name = dict(models.SENSOR_TYPE)
+            for sensor_type in all_sensors_distinct_types:
+                sensor_type_child = {}
+                
+                sensor_type_child['id'] = station.name + '::' + sensor_type
+                sensor_type_child['text'] = sensor_type_full_name[sensor_type]
+                sensor_type_child['children'] = True
+                sensor_type_child['state'] = ['closed']
+                
+                children.append(sensor_type_child)
+
+            child['children'] = children
             root_children.append(child)
-
-        nodes = {'children': root_children, 'id': node_id}
-
+            nodes = {'children': root_children, 'id': node_id}
+    else:
+        #is a child node
+        station_name, sensor_type = node_id.split('::')
+        station = models.Station.objects.get(name=station_name)
+        sensors = models.Sensor.objects.filter(station=station,
+                                               sensor_type=sensor_type)
+        #for each sensor
+        for sensor in sensors:
+            child = {}
+            child['id'] = station.name + ".." +sensor.name
+            child['text'] = sensor.name
+            root_children.append(child)
+        nodes = root_children
+    
     return HttpResponse(json.dumps(nodes), content_type="application/json")
 
 
