@@ -44,7 +44,7 @@ class Station(models.Model):
     slug = models.SlugField(primary_key=True)
     location = models.TextField(blank=True)
     date_installed = models.DateField(null=True, blank=True)
-    active = models.BooleanField()
+    active = models.BooleanField(default=False)
     contact = models.EmailField(max_length=254, blank=True)
     logger_interval = models.IntegerField(help_text="Sensor Readings per "
                                           "Second")

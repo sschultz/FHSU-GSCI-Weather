@@ -4,11 +4,21 @@ from django.http import HttpResponseBadRequest
 import Stations.models as models
 import Stations.highchart as highchart
 from datetime import datetime, timedelta
+from collections import OrderedDict
 import json
 
 
 def celcius2fahrenheit(c):
     return (c*9.0/5.0)+32
+
+
+def getDefaultStationObj():
+    #first try to get windfarm
+    station_obj = models.Station.objects.get(name='Windfarm')
+    if station_obj is None:
+        #no default station found, fall back on first loaded station
+        station_obj = models.Station.objects.all()[0]
+    return station_obj
 
 
 def stationListView(request):
@@ -27,6 +37,34 @@ def stationListView(request):
     JSONstr = json.dumps(stations)
     return HttpResponse(JSONstr, content_type="application/json")
 
+
+def stationInfo(request, station=''):
+    try:
+        if station == '':
+            stationObj = getDefaultStationObj()
+        else:
+            station = station.lower()
+            stationObj = models.Station.objects.get(slug=station)
+
+        assert isinstance(stationObj, models.Station)
+    except:
+        return HttpResponseNotFound('<h1>Unable to find station</h1>')
+
+    details = OrderedDict((
+        ('name', stationObj.name),
+        ('slug', stationObj.slug),
+        ('description', stationObj.description),
+        ('active', stationObj.active),
+    ))
+
+    defaultSensors = lambda obj: models.Sensor.objects.filter(station=obj, frontPage=True)
+    sensors = lambda obj: models.Sensor.objects.filter(station=obj)
+
+    #build a list of all sensors on this station
+    details['default_sensors'] = [sen.slug for sen in defaultSensors(stationObj)]
+    details['sensors'] = [sen.slug for sen in sensors(stationObj)]
+
+    return HttpResponse(json.dumps(details, indent=True), content_type="application/json")
 
 def stationTree(request):
     node_id = request.GET.get('id')
@@ -135,17 +173,13 @@ def highchartView(request, station, sensor):
 def stationView(request, station=''):
     station = station.lower()
     station_obj_all = models.Station.objects.all()
-    station_obj = None
-    #first try if no station specified then choose a default
+
     if station == '':
         try:
-            station_obj = models.Station.objects.get(name='Windfarm')
+            station_obj = getDefaultStationObj()
             if station_obj is None:
-                #no default station found, fall back on first loaded station
-                station_obj = models.Station.objects.all()[0]
-                if station_obj is None:
-                    return HttpResponseNotFound('<h1>Default station not '
-                                                'found</h1>')
+                return HttpResponseNotFound('<h1>Default station not '
+                                            'found</h1>')
         except:
             #if ...objects.all() returns None
             #then ...objects.all()[0] will cause an exception

@@ -61,6 +61,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'weather',
         'USER': 'webdev',
+        'PASSWORD': 'admin',
         'HOST': ''
     }
 }
