@@ -8,8 +8,7 @@ from collections import OrderedDict
 import json
 
 
-def celcius2fahrenheit(c):
-    return (c*9.0/5.0)+32
+celcius2fahrenheit = lambda c: (c*9.0/5.0)+32
 
 
 def getDefaultStationObj():
@@ -39,6 +38,7 @@ def stationListView(request):
 
 
 def stationInfo(request, station=''):
+    """Station Info View for station specific Info in JSON format"""
     try:
         if station == '':
             stationObj = getDefaultStationObj()
