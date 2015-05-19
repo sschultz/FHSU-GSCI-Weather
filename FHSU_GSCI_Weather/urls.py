@@ -18,6 +18,10 @@ urlpatterns = patterns(
     url(r'^(?i)stations/(?P<station>.+)/$', 'Stations.views.stationView',
         name='station-view-spec'),
 
+    #/radar
+    url(r'^(?i)radar/$', 'Radar.views.radarView',
+        name='radar-view'),
+
     #/station-list/?
     url(r'^(?i)station-list/$', 'Stations.views.stationListView',
         name='station-list'),
