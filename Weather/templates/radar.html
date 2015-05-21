@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block additional-head %}
+    <script type="text/javascript" src="{% static "js/radar.js" %}"></script>
+    <link href="{% static "css/radar.css" %}" rel="stylesheet">
+{% block init-head %}
+{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div id="local">
+    <h1>National Weather Service</h1>
+    <h2>Dopplar Radar - Dodge City, KS</h2>
+    <div id="controls"></div>
+    <div id="display"></div>
+</div>
+
+<div id="loop">
+    <h2>NWS Dopplar Radar Loop</h2>
+    <a href="http://radar.weather.gov/ridge/Conus/Loop/NatLoop.gif" target="_blank" title="Click To Enlarge">
+    <img src="http://radar.weather.gov/ridge/Conus/Loop/NatLoop_Small.gif"/>
+    </a>
+</div>
+{% endblock %}

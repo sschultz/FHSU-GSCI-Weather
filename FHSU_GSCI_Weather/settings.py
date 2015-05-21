@@ -13,7 +13,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 TEMPLATE_DIRS = (BASE_DIR+'/templates', BASE_DIR+'/Stations/templates',)
 STATICFILES_DIRS = (BASE_DIR+'/static', BASE_DIR+'/Stations/static',
-                    BASE_DIR+'/Radar/static')
+                    BASE_DIR+'/Weather/static')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Stations',
-    'Radar',
+    'Weather',
 )
 
 MIDDLEWARE_CLASSES = (

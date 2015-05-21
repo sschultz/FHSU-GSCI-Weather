@@ -155,7 +155,7 @@ def highchartView(request, station, sensor):
         start = datetime.strptime(start, fmt)
     except:
         start = None
-    #only evalueate end if start is set (not None)
+    #only evaluate end if start is set (not None)
     if start is not None:
         try:
             end = request.GET.get('end', None)
