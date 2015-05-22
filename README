@@ -3,6 +3,7 @@ DEPENDENCIES:
  - Django 1.6
  - cron
  - PostgreSQL
+ - coffee-script
 
 Python Modules:
  - python-crontab
