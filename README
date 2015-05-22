@@ -2,10 +2,15 @@ DEPENDENCIES:
  - Python
  - Django 1.6
  - cron
- - PostgreSQL 
+ - PostgreSQL
 
 Python Modules:
  - python-crontab
- - python module for choosen database
- - pycampbellcr1000 for campbell data logger support
- - postgresql_psycopg2
+ - python module for chosen database
+ - pycampbellcr1000 for Campbell data logger support
+ - psycopg2 for Django Postgres integration
+ - suds for SOAP client
+ 
+When installing onto a new system, the database and website user
+must be created via database console manually.  Then the settings.py
+file must be updated with the created user and database.
