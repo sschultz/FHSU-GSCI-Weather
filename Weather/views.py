@@ -2,8 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.core import exceptions as django_ex
 from Weather.models import Forecast as ForecastModel
-from Weather.util import updateHaysForecast
-from Weather.util import forecastDBname
+from Weather.util import updateForecast
 from datetime import datetime, timedelta
 
 
@@ -14,13 +13,10 @@ def radarView(request):
 def forecastView(request):
     # check if NWS forecast data needs updated
     # only update once every 2 hours
-    try:
-        obj = ForecastModel.objects.get(type=forecastDBname)
-        if datetime.now() - obj.refreshed > timedelta(hours=2):
-            updateHaysForecast()
-    except django_ex.ObjectDoesNotExist:
-        # updateHaysForecast will create the forecast table entry
-        updateHaysForecast()
-        obj = ForecastModel.objects.get(type=forecastDBname)
+    obj = ForecastModel.objects.get(days=7, hours=12, location='Hays, KS')
+    if obj.refreshed == None or \
+        datetime.now() - obj.refreshed > timedelta(hours=2):
 
-    HttpResponse(obj.json_str, content_type="application/json")
+        updateForecast(obj)
+
+    return HttpResponse(obj.json_forecast, content_type="application/json")

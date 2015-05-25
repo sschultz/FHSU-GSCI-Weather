@@ -22,8 +22,8 @@ urlpatterns = patterns(
     url(r'^(?i)radar/$', 'Weather.views.radarView',
         name='radar-view'),
 
-    #/forcast
-    url(r'^(?i)radar/$', 'Weather.views.forecastView',
+    #/forecast
+    url(r'^(?i)forecast/$', 'Weather.views.forecastView',
         name='forecast-view'),
 
     #/station-list/?
