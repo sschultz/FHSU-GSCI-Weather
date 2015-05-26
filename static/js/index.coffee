@@ -19,7 +19,7 @@ $ ->
         if period.precip
           day += "Chance of Rain: " + period.precip + "%</br>"
         if period.conditions
-          day += "Conditions: " + period.conditions + "</br>"
+          day += period.conditions + "</br>"
 
         if period.icon
           day += "<img src=\"" + period.icon + "\"/>"
@@ -34,7 +34,7 @@ $ ->
         if period.precip
           night += "Chance of Rain: " + period.precip + "%</br>"
         if period.conditions
-          night += "Conditions: " + period.conditions + "</br>"
+          night += period.conditions + "</br>"
 
         if period.icon
           night += "<img src=\"" + period.icon + "\"/>"

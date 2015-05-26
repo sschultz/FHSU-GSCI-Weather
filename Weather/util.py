@@ -140,7 +140,8 @@ def updateForecast(forecastObj):
     sh.setLevel(logging.INFO)
     logger.addHandler(sh)
 
-    logger.info("Downloading the latest NWS forecast information")
+    logger.info("Downloading the latest NWS forecast "
+                "information for " + forecastObj.location)
 
     # extract NWS data from SOAP server
     client = SOAPClient(SOAP_URL)
