@@ -9,7 +9,7 @@ urlpatterns = patterns(
     url(r'^(?i)admin/', include(admin.site.urls), name='admin-view'),
 
     #/
-    url(r'^(?i)$', 'Stations.views.homepageView', name='homepage-view'),
+    url(r'^(?i)$', 'Weather.views.homepageView', name='homepage-view'),
 
     #/stations/
     url(r'^(?i)stations/$', 'Stations.views.stationView', name='station-view'),

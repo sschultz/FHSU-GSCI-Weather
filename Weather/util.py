@@ -85,7 +85,7 @@ def dwml2json(root):
 
     # get MIN temperature forecast
     key = root.find("./data/parameters/temperature[@type='minimum']").get('time-layout')
-    for i, els in enumerate(root.findall("./data/parameters/temperature[@type='maximum']/value")):
+    for i, els in enumerate(root.findall("./data/parameters/temperature[@type='minimum']/value")):
         # try to find matching time frame for temp layout and base layout
         try:
             match = layouts[baseLayout]['starts'].index(layouts[key]['starts'][i])

@@ -4,35 +4,20 @@
 {% block additional-head %}
     <script src="{% static "highcharts.js" %}"></script>
     <script src="{% static "modules/exporting.js" %}"></script>
-    <script src="{% static "js/index.js" %}"
-<script>
-$(function() {
-    Highcharts.setOptions({
-        global: { useUTC: false }
-    });
-})
-</script>
+    <script src="{% static "js/index.js" %}"></script>
 {% endblock %}
 
 {% block content %}
 <div id='weather-content'>
     <div id='weather-heading'>
-        Hays Weather Conditions<br/>
+        <h1>Hays Weather Conditions</h1>
     </div>
-    <div id='date'>{{asof}}</div><br/>
-    <table>
-        <tr><td><div id='temp'>{{curtemp}}</div></td>
-        <td>
-        <div id='current'>
-            <table>
-                <tr><td><div id='mlabel'>Relative Humidity:</div></td></tr>
-                <tr><td><div id='mlabel'>Wind:</div></td></tr>
-                <tr><td><div id='mlabel'>Precipitation:</div></td></tr>
-            </table>
-        </div>
-        </td></tr>
-    </table>
-    <div id="forcast">
+    <div id="forecast">
+        <table class="ftable">
+            <tr class="header"><th>Forecast</th></tr>
+            <tr class="day"><th>Day</th></tr>
+            <tr class="night"><th>Night</th></tr>
+        </table>
     </div>
 </div>
 <div id="Temp-Graph" style="width: 580px; height: 250px; margin: 0 4px 3px"></div>

@@ -8,9 +8,6 @@ from collections import OrderedDict
 import json
 
 
-celcius2fahrenheit = lambda c: (c*9.0/5.0)+32
-
-
 def getDefaultStationObj():
     #first try to get windfarm
     station_obj = models.Station.objects.get(name='Windfarm')
@@ -210,17 +207,3 @@ def stationView(request, station=''):
                   {'stations': station_obj_all,
                    'selStation': station_obj,
                    'default_sensor_list': sensor_list})
-
-
-def homepageView(request):
-    station_obj = models.Station.objects.get(name='Windfarm')
-    tmp_sensor_obj = models.Sensor.objects.get(name='Tmp_110S_5ft',
-                                               station=station_obj)
-
-    last2days = datetime.now() - timedelta(2)
-    tmp_data = highchart.dataSince(tmp_sensor_obj, last2days)
-    tmp_data_str = highchart.sensorData2HighchartsData(tmp_data,
-                                                       celcius2fahrenheit)
-    return render(request, "index.html",
-                  {'asof': '3:30 PM', 'curtemp': '80',
-                   'tempdata': tmp_data_str})
