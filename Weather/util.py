@@ -126,14 +126,28 @@ def dwml2json(root):
     return json.dumps(forecastList, indent=2)
 
 def updateForecast(forecastObj):
-
+    """
+    The latest NWS forecast information will be extracted and stored
+    into the database as a JSON string.
+    :param forecastObj: Django Forecast model object.
+    """
+    #set up logger to print info message
+    formatter = logging.Formatter("%(module)s: %(levelname)s: %(asctime)s - %(message)s")
     logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    sh = logging.StreamHandler()
+    sh.setFormatter(formatter)
+    sh.setLevel(logging.INFO)
+    logger.addHandler(sh)
+
     logger.info("Downloading the latest NWS forecast information")
+
     # extract NWS data from SOAP server
     client = SOAPClient(SOAP_URL)
 
     # definition:
     # NDFDgenByDay(lat, lon, startDate, numDays, Units, format)
+    # returns a string representing the xml data results
     results = client.service.NDFDgenByDay(
         str(forecastObj.lat),  # lat
         str(forecastObj.lon),  # lon
@@ -143,8 +157,10 @@ def updateForecast(forecastObj):
         '%i hourly' % forecastObj.hours  # format, either '12 hourly' or '24 hourly (e.i. 6:00 AM - 6:00 AM)'
     )
 
-    # use ElementTree to parse returned xml
+    # use ElementTree to parse returned xml string
     root = ET.fromstring(results)
+
+    # Convert the Element of the DWML xml object into a JSON string
     forecastObj.json_forecast=dwml2json(root)
 
     # import hazardous conditions from DWML data
