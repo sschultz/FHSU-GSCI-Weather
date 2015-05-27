@@ -1,23 +1,15 @@
-#local {
-  left: 1em;
-  top: 5em;
-  height: 660px;
+#display {
+  padding: 1em
 }
 
-#display {
-  position: absolute;
-  z-index: -1;
+#radar {
+  width: 800px;
+  height: 800px;
   border: solid 1px;
 }
 
-.overlay {
-  position: inherit;
-  left: 0px;
-  top: 0px;
-}
-
 #loop {
-  left: 1em;
+  padding: 1em
 }
 
 #loop img {border: solid 1px;}

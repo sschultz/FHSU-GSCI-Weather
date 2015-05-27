@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core import exceptions as django_ex
+from django.conf import settings
 import Stations.highchart as highchart
 from Weather.models import Forecast as ForecastModel
 from Stations.models import Station as StationModel
@@ -14,7 +15,7 @@ def celsius2fahrenheit(c):
 
 
 def radarView(request):
-    return render(request, 'radar.html', {})
+    return render(request, 'radar.html', {'API_KEY': settings.GOOGLE_API_KEY})
 
 
 def forecastView(request):

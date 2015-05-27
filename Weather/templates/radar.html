@@ -2,18 +2,19 @@
 {% load staticfiles %}
 
 {% block additional-head %}
-    <script type="text/javascript" src="{% static "js/radar.js" %}"></script>
     <link href="{% static "css/radar.css" %}" rel="stylesheet">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ API_KEY }}"></script>
+    <script type="text/javascript" src="{% static "js/radar.js" %}"></script>
 {% block init-head %}
 {% endblock %}
 {% endblock %}
 
 {% block content %}
-<div id="local">
-    <h1>National Weather Service</h1>
-    <h2>Dopplar Radar - Dodge City, KS</h2>
-    <div id="controls"></div>
-    <div id="display"></div>
+<div id="display">
+    <h1>NEXRAD Dopler Radar</h1>
+    <h2>Radar generated on:<span class="timestamp"></span></h2>
+    <h3>Source: Iowa State University NEXRAD Composites</h3>
+    <div id="radar"></div>
 </div>
 
 <div id="loop">

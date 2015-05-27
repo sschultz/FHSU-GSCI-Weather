@@ -28,6 +28,9 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Must be a registered google API key from the developers dashboard
+# https://console.developers.google.com
+GOOGLE_API_KEY = r""
 
 # Application definition
 
