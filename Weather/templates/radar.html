@@ -3,7 +3,12 @@
 
 {% block additional-head %}
     <link href="{% static "css/radar.css" %}" rel="stylesheet">
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ API_KEY }}"></script>
+<script type="text/javascript">
+wms_overlays = [{% for layer in wms_overlays %}
+    {'name':'{{layer.display_name}}','url':'{{layer.url}}?REQUEST=GetMap&SERVICE=WMS&VERSION={{layer.version}}&LAYERS={{layer.layer}}&FORMAT={{layer.format}}&SRS={{layer.coordsys}}&WIDTH={{layer.tile_width}}&HEIGHT={{layer.tile_height}}','width':{{layer.tile_width}},'height':{{layer.tile_height}},'update':{{layer.update_period}}}
+{% endfor %}]
+</script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}"></script>
     <script type="text/javascript" src="{% static "js/radar.js" %}"></script>
 {% block init-head %}
 {% endblock %}

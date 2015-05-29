@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core import exceptions as django_ex
+from django.core import serializers
 from django.conf import settings
 import Stations.highchart as highchart
 from Weather.models import Forecast as ForecastModel
+from Weather.models import WMSRadarOverlay as WMSRadarOverlayModel
 from Stations.models import Station as StationModel
 from Stations.models import Sensor as SensorModel
 from Weather.util import updateForecast
@@ -15,7 +17,15 @@ def celsius2fahrenheit(c):
 
 
 def radarView(request):
-    return render(request, 'radar.html', {'API_KEY': settings.GOOGLE_API_KEY})
+    WMSOverlays = WMSRadarOverlayModel.objects.filter(active=True)
+
+    staticOverlays = None
+
+    return render(request, 'radar.html', {
+        'api_key': settings.GOOGLE_API_KEY,
+        'wms_overlays': WMSOverlays,
+        'static_overlays': staticOverlays
+    })
 
 
 def forecastView(request):

@@ -1,5 +1,4 @@
 from django.db import models
-from datetime import datetime, time
 
 HOURLY_TYPE = (
     (12, '12 Hour'),
@@ -21,7 +20,8 @@ class Forecast(models.Model):
     )
     refreshed = models.DateTimeField(
         help_text='Data was last refreshed on this date',
-        null=True
+        null=True,
+        editable=False
     )
 
     location = models.TextField(editable=False, help_text="Location Display Name")
@@ -43,8 +43,29 @@ class Forecast(models.Model):
 
     def __str__(self):
         return "%i day %i hour forecast for %s retrieved on %s" %\
-               (self.days, self.hous, self.location, str(self.refreshed))
+               (self.days, self.hours, self.location, str(self.refreshed))
 
     class Meta:
         ordering = ['location']
         index_together = [['days', 'hours']]
+
+class WMSRadarOverlay(models.Model):
+    display_name = models.TextField(blank=False, null=False)
+    url = models.URLField(blank=False, null=False)
+    layer = models.TextField(blank=False, null=False)
+    tile_width = models.PositiveIntegerField(default=256)
+    tile_height = models.PositiveIntegerField(default=256)
+    version = models.CharField(default="1.1.1", max_length=10, verbose_name="WMS Version")
+    update_period = models.PositiveIntegerField(
+        default=5,
+        help_text="How long (in minutes) does it take to update"
+    )
+    format = models.TextField(default="image/png")
+    coordsys = models.TextField(
+        default="EPSG:4326",
+        help_text="Example Reference: http://spatialreference.org/ref/epsg/wgs-84/"
+    )
+    active = models.BooleanField(default=False, null=False, help_text="Whether to display this overlay or not")
+
+    class Meta:
+        verbose_name = "WMS Radar Overlay"

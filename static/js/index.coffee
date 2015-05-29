@@ -3,7 +3,7 @@ $ ->
     global: {useUTC: false}
   }
 
-  $.get "http://localhost:8000/forecast", (forecast) ->
+  $.get "http://localhost:8000/forecast/", (forecast) ->
     headerRow = $ ".ftable .header"
     dayRow = $ ".ftable .day"
     nightRow = $ ".ftable .night"
