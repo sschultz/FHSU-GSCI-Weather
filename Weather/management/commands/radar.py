@@ -5,13 +5,15 @@ from Weather.models import WMSRadarOverlay
 
 
 def init_radar_overlays():
-    LayerName = "Doppler Radar"
+    RadarLayerName = "NEXRAD Doppler Radar"
+    AlertsLayerName = "Alerts and Warnings"
     try:
-        WMSRadarOverlay.objects.get(display_name=LayerName)
+        WMSRadarOverlay.objects.get(display_name=RadarLayerName)
+        print(RadarLayerName + " WMS Overlay already exists.")
 
     except ObjectDoesNotExist:
         obj = WMSRadarOverlay.objects.create(
-            display_name=LayerName,
+            display_name=RadarLayerName,
             url=r"http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi",
             layer=r"nexrad-n0r-wmst",
             tile_width=256,
@@ -24,11 +26,31 @@ def init_radar_overlays():
         obj.clean()
         obj.save()
 
-        print(LayerName + " WMS Overlay Entry Added")
+        print(RadarLayerName + " WMS Overlay Entry Added")
 
-    else:
-        print(LayerName + " WMS Overlay already exists.")
-        print("Nothing to do")
+    try:
+        WMSRadarOverlay.objects.get(display_name=AlertsLayerName)
+        print(AlertsLayerName + " WMS Overlay already exists.")
+
+    except ObjectDoesNotExist:
+        obj = WMSRadarOverlay.objects.create(
+            display_name=AlertsLayerName,
+            url=r"http://gis.srh.noaa.gov/arcgis/services/watchwarn/MapServer/WmsServer",
+            layer=r"0",
+            tile_width=256,
+            tile_height=256,
+            update_period=5,
+            format="image/png",
+            coordsys="EPSG:4326",
+            active=True
+        )
+
+        obj.clean()
+        obj.save()
+
+        print(AlertsLayerName + " WMS Overlay Entry Added")
+
+    print("Done")
 
 
 class Command(BaseCommand):
