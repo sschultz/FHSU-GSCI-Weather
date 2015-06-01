@@ -67,5 +67,8 @@ class WMSRadarOverlay(models.Model):
     )
     active = models.BooleanField(default=False, null=False, help_text="Whether to display this overlay or not")
 
+    def __str__(self):
+        return str(self.display_name)
+
     class Meta:
         verbose_name = "WMS Radar Overlay"
