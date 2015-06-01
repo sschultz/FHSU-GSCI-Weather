@@ -164,12 +164,10 @@ def updateForecast(forecastObj):
     # Convert the Element of the DWML xml object into a JSON string
     forecastObj.json_forecast=dwml2json(root)
 
-    # import hazardous conditions from DWML data
-    #hazards = paramEls.findall('./hazards/hazard-conditions/hazard')
-
-    #forecastObj.json_alerts=data
-    forecastObj.json_alerts=None
-
     forecastObj.refreshed=datetime.now()
     forecastObj.clean()
     forecastObj.save()
+
+# TODO
+def updateHazards():
+    pass
