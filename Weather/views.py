@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.core import exceptions as django_ex
 from django.core import serializers
+from django.utils import timezone
 from django.conf import settings
 import Stations.highchart as highchart
 from Weather.models import Forecast as ForecastModel
@@ -9,7 +10,7 @@ from Weather.models import WMSRadarOverlay as WMSRadarOverlayModel
 from Stations.models import Station as StationModel
 from Stations.models import Sensor as SensorModel
 from Weather.util import updateForecast
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
 def celsius2fahrenheit(c):
@@ -33,7 +34,7 @@ def forecastView(request):
     # only update once every 2 hours
     obj = ForecastModel.objects.get(days=7, hours=12, location='Hays, KS')
     if obj.refreshed == None or \
-        datetime.now() - obj.refreshed > timedelta(hours=2):
+        timezone.now() - obj.refreshed > timedelta(hours=2):
 
         updateForecast(obj)
 
@@ -44,7 +45,7 @@ def homepageView(request):
     tmp_sensor_obj = SensorModel.objects.get(name='Tmp_110S_5ft',
                                                station=station_obj)
 
-    last2days = datetime.now() - timedelta(2)
+    last2days = timezone.now() - timedelta(2)
     tmp_data = highchart.dataSince(tmp_sensor_obj, last2days)
     tmp_data_str = highchart.sensorData2HighchartsData(tmp_data,
                                                        celsius2fahrenheit)

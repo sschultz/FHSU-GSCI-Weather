@@ -3,6 +3,7 @@
 from collections import OrderedDict
 import xml.etree.ElementTree as ET
 from datetime import datetime, time
+from django.utils import timezone
 import logging
 from suds.client import Client as SOAPClient
 
@@ -123,7 +124,14 @@ def dwml2json(root):
         except (ValueError, TypeError):
             continue
 
-    return json.dumps(forecastList, indent=2)
+    ts = timezone.now()
+
+    forecast = OrderedDict([
+        ('refreshed', ts.isoformat()),
+        ('forecast', forecastList)
+    ])
+
+    return json.dumps(forecast, indent=2)
 
 def updateForecast(forecastObj):
     """
@@ -164,7 +172,7 @@ def updateForecast(forecastObj):
     # Convert the Element of the DWML xml object into a JSON string
     forecastObj.json_forecast=dwml2json(root)
 
-    forecastObj.refreshed=datetime.now()
+    forecastObj.refreshed=timezone.now()
     forecastObj.clean()
     forecastObj.save()
 

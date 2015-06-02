@@ -52,7 +52,7 @@ class Forecast(models.Model):
 class WMSRadarOverlay(models.Model):
     display_name = models.TextField(blank=False, null=False)
     url = models.URLField(blank=False, null=False)
-    layer = models.TextField(blank=False, null=False)
+    layers = models.TextField(blank=False, null=False, help_text="Comma separated list of layers to be pulled")
     tile_width = models.PositiveIntegerField(default=256)
     tile_height = models.PositiveIntegerField(default=256)
     version = models.CharField(default="1.1.1", max_length=10, verbose_name="WMS Version")
@@ -68,7 +68,7 @@ class WMSRadarOverlay(models.Model):
     active = models.BooleanField(default=False, null=False, help_text="Whether to display this overlay or not")
 
     def __str__(self):
-        return str(self.display_name)
+        return str(self.display_name) + " (%s)" % str(self.layers)
 
     class Meta:
         verbose_name = "WMS Radar Overlay"

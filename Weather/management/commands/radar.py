@@ -15,7 +15,7 @@ def init_radar_overlays():
         obj = WMSRadarOverlay.objects.create(
             display_name=RadarLayerName,
             url=r"http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi",
-            layer=r"nexrad-n0r-wmst",
+            layers=r"nexrad-n0r-wmst",
             tile_width=256,
             tile_height=256,
             update_period=5,
@@ -36,7 +36,7 @@ def init_radar_overlays():
         obj = WMSRadarOverlay.objects.create(
             display_name=AlertsLayerName,
             url=r"http://gis.srh.noaa.gov/arcgis/services/watchwarn/MapServer/WmsServer",
-            layer=r"0",
+            layers=r"0",
             tile_width=256,
             tile_height=256,
             update_period=5,
