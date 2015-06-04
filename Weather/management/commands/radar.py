@@ -6,7 +6,8 @@ from Weather.models import WMSRadarOverlay
 
 def init_radar_overlays():
     RadarLayerName = "NEXRAD Doppler Radar"
-    AlertsLayerName = "Alerts and Warnings"
+    AltRadarLayerName = "NWS RIDGE Radar"
+
     try:
         WMSRadarOverlay.objects.get(display_name=RadarLayerName)
         print(RadarLayerName + " WMS Overlay already exists.")
@@ -22,6 +23,7 @@ def init_radar_overlays():
             format="image/png",
             coordsys="EPSG:4326",
             credit="Iowa State University",
+            legend_url=None,
             active=True
         )
         obj.clean()
@@ -30,13 +32,13 @@ def init_radar_overlays():
         print(RadarLayerName + " WMS Overlay Entry Added")
 
     try:
-        WMSRadarOverlay.objects.get(display_name=AlertsLayerName)
-        print(AlertsLayerName + " WMS Overlay already exists.")
+        WMSRadarOverlay.objects.get(display_name=AltRadarLayerName)
+        print(AltRadarLayerName + " WMS Overlay already exists.")
 
     except ObjectDoesNotExist:
         obj = WMSRadarOverlay.objects.create(
-            display_name=AlertsLayerName,
-            url=r"http://gis.srh.noaa.gov/arcgis/services/watchwarn/MapServer/WmsServer",
+            display_name=AltRadarLayerName,
+            url=r"http://gis.srh.noaa.gov/arcgis/services/RIDGERadar/MapServer/WMSServer",
             layers=r"0",
             tile_width=256,
             tile_height=256,
@@ -44,13 +46,14 @@ def init_radar_overlays():
             format="image/png",
             coordsys="EPSG:4326",
             credit="National Weather Service",
-            active=True
+            legend_url="http://gis.srh.noaa.gov/arcgis/services/RIDGERadar/MapServer/WMSServer?request=GetLegendGraphic&version=1.1.1&format=image/png&layer=0",
+            active=False
         )
 
         obj.clean()
         obj.save()
 
-        print(AlertsLayerName + " WMS Overlay Entry Added")
+        print(AltRadarLayerName + " WMS Overlay Entry Added")
 
     print("Done")
 

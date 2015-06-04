@@ -67,6 +67,7 @@ class WMSRadarOverlay(models.Model):
     )
     active = models.BooleanField(default=False, null=False, help_text="Whether to display this overlay or not")
     credit = models.TextField(blank=True)
+    legend_url = models.URLField(null=True, default=None)
 
     def __str__(self):
         return str(self.display_name) + " (%s)" % str(self.layers)
