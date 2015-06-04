@@ -21,6 +21,7 @@ def init_radar_overlays():
             update_period=5,
             format="image/png",
             coordsys="EPSG:4326",
+            credit="Iowa State University",
             active=True
         )
         obj.clean()
@@ -42,6 +43,7 @@ def init_radar_overlays():
             update_period=5,
             format="image/png",
             coordsys="EPSG:4326",
+            credit="National Weather Service",
             active=True
         )
 
