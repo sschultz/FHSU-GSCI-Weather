@@ -46,7 +46,7 @@ $ ->
 
     source = $ "#source p"
     dt = new Date(forecast.refreshed)
-    refreshed = dt.getMonth()+1 + "-" +
+    refreshed = (dt.getMonth()+1) + "-" +
       dt.getDate() + "-" +
       dt.getFullYear() + " " +
       (if dt.getHours() % 12 == 0 then "12" else dt.getHours() % 12) +

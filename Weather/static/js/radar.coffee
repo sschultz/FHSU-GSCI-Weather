@@ -14,19 +14,26 @@ if !Date.prototype.toISOString
       + '.' + String((this.getUTCMilliseconds() / 1000).toFixed 3).slice 2, 5
       +'Z')
 
-# Get nearest 5 minutes that has past or currently is in UTC time
-genMostRecent = ->
+# Get latest update period (in minutes) that has past or currently is in UTC time
+genMostRecent = (updatePeriod) ->
   date = new Date()
   mins = date.getUTCMinutes()
-  date.setUTCMinutes mins - mins % 5
+  date.setUTCMinutes mins - mins % updatePeriod
   date.setUTCSeconds 0
   date.setUTCMilliseconds 0
   return date
 
-latest = genMostRecent()
-ISOdate = latest.toISOString()
-
 $ ->
+  # print radar time
+  latest = genMostRecent(5)
+  $(".timestamp").text " " +
+    (if latest.getHours() % 12 == 0 then "12" else latest.getHours() % 12) +
+    ":" + latest.getMinutes() + " " +
+    (if latest.getHours() >= 12 then "PM " else "AM ") +
+    (latest.getMonth()+1) + "/" +
+    latest.getDate() + "/" +
+    latest.getFullYear()
+
   # base map will not draw roads and cities
   map = new google.maps.Map document.getElementById("radar"), {
     zoom: 8
@@ -55,6 +62,9 @@ $ ->
         top = proj.fromPointToLatLng new google.maps.Point(coord.x * 256 / zfactor, coord.y * 256 / zfactor)
         bot = proj.fromPointToLatLng new google.maps.Point((coord.x + 1) * 256 / zfactor, (coord.y + 1) * 256 / zfactor)
         bbox = top.lng() + "," + bot.lat() + "," + bot.lng() + "," + top.lat()
+
+        latest = genMostRecent layer.update
+        ISOdate = latest.toISOString()
 
         url = layer.url
         url += "&BBOX=" + bbox
