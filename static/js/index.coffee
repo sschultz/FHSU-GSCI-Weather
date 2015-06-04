@@ -49,8 +49,8 @@ $ ->
     refreshed = dt.getMonth()+1 + "-" +
       dt.getDate() + "-" +
       dt.getFullYear() + " " +
-      dt.getHours() % 12 + ":" +
-      dt.getMinutes() + " " +
-      if dt.getHours() >= 12 then "PM" else "AM"
+      (if dt.getHours() % 12 == 0 then "12" else dt.getHours() % 12) +
+      ":" + dt.getMinutes() + " " +
+      (if dt.getHours() >= 12 then "PM" else "AM")
 
     source.text "Source: National Weather Service (updated " + refreshed + ")"
