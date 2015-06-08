@@ -28,10 +28,6 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Must be a registered google API key from the developers dashboard
-# https://console.developers.google.com
-GOOGLE_API_KEY = r""
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -51,7 +47,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'Stations.disable.DisableCSRF',
 )
 
 ROOT_URLCONF = 'FHSU_GSCI_Weather.urls'

@@ -22,69 +22,83 @@ genMostRecent = (updatePeriod) ->
   date.setUTCSeconds 0
   date.setUTCMilliseconds 0
   return date
-
+  
 $ ->
   # print radar time
   latest = genMostRecent(5)
   $(".timestamp").text " " +
     (if latest.getHours() % 12 == 0 then "12" else latest.getHours() % 12) +
-    ":" + latest.getMinutes() + " " +
+    ":" + ('0' + latest.getMinutes()).slice(-2) + " " +
     (if latest.getHours() >= 12 then "PM " else "AM ") +
     (latest.getMonth()+1) + "/" +
     latest.getDate() + "/" +
     latest.getFullYear()
 
   # base map will not draw roads and cities
-  map = new google.maps.Map document.getElementById("radar"), {
-    zoom: 8
-    maxZoom: 10
-    minZoom: 4
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-    navigationControl: true
-    center: new google.maps.LatLng 38.885425, -99.317830
-    styles: [
-      {featureType: 'all', stylers: [{visibility: 'on'}]},
-      {featureType: 'administrative', stylers: [{visibility: 'off'}]},
-      {featureType: 'road', stylers: [{visibility: 'off'}]}
+  map = new ol.Map {
+    target: "radar"
+    layers: [
+      new ol.layer.Tile {
+        source: new ol.source.MapQuest {layer: 'sat'}
+      }
     ]
+    view: new ol.View {
+      center: ol.proj.transform [-99.317830, 38.885425], 'EPSG:4326', 'EPSG:3857'
+      zoom: 7
+    }
+  }
+  
+  # Details: http://wiki.openstreetmap.org/wiki/EPSG:3857
+  # Spherical Mercator projection coordinate system popularized by web services such as Google and later OpenStreetMap.
+  BaseMapProjection = ol.proj.get "EPSG:3857"
+  
+  buildLayer = (layer) ->
+    latest = genMostRecent layer.update
+    ISOdate = latest.toISOString()
+    map.addLayer new ol.layer.Tile {
+      source: new ol.source.TileWMS {
+        url: layer.url
+        params: {
+          'LAYERS': layer.layers
+          'TIME': ISOdate
+        }
+        projection: BaseMapProjection
+      }
+    }
+  buildLayer layer for layer in window.wms_overlays
+  
+  GMLFormat = new ol.format.GML {
+    srsName: "EPSG:4326"
   }
 
-  buildLayer = (layer) ->
-    mapType = new google.maps.ImageMapType {
-      alt: layer.name
-      name: layer.name
-      credit: layer.credit
-      minZoom: 4
-      maxZoom: 10
-      getTileUrl: (coord, zoom) ->
-        proj = map.getProjection()
-        zfactor = Math.pow 2, zoom
-        top = proj.fromPointToLatLng new google.maps.Point(coord.x * 256 / zfactor, coord.y * 256 / zfactor)
-        bot = proj.fromPointToLatLng new google.maps.Point((coord.x + 1) * 256 / zfactor, (coord.y + 1) * 256 / zfactor)
-        bbox = top.lng() + "," + bot.lat() + "," + bot.lng() + "," + top.lat()
-
-        latest = genMostRecent layer.update
-        ISOdate = latest.toISOString()
-
-        url = layer.url
-        url += "&BBOX=" + bbox
-        url += "&TIME=" + ISOdate
-        return url
-
-      isPng: true,
-      tileSize: new google.maps.Size layer.width, layer.height
-    }
-
-    map.overlayMapTypes.push mapType
-    return layer.name
-
-  layerNames = (buildLayer layer for layer in window.wms_overlays)
-
-  # top layer will draw roads and cities over all overlays
-  toplevelLayer = new  google.maps.StyledMapType [
-    {featureType: 'all', stylers: [{visibility: 'off'}]},
-    {featureType: 'road', stylers: [{visibility: 'on'}]},
-    {featureType: 'administrative', stylers: [{visibility: 'on'}]}
-  ], {name: 'abc'}
-
-  map.overlayMapTypes.push toplevelLayer
+  ###
+  # Create our Alerts and Warnings (NWS) Source
+  AWSource = new ol.source.Vector {
+    loader: (extent, resolution, projection) ->
+      extent = ol.proj.transformExtent(extent, "EPSG:3857", "EPSG:4326")
+      url = 'http://gis.srh.noaa.gov/arcgis/services/watchwarn/MapServer/WFSServer?service=WFS&' +
+        'version=1.1.0&request=GetFeature&TypeName=WatchesWarnings&' +
+        'format_options=callback:loadFeatures&' +
+        'srsname=EPSG:4326&bbox=' + extent.join(',')
+      
+      $.ajax {
+        url: url,
+        datatype: "xml"
+        jsonp: false
+      }
+    strategy: ol.loadingstrategy.tile ol.tilegrid.createXYZ( )
+  }
+  
+  window.loadFeatures = (response) ->
+    AWSource.addFeatures GMLFormat.readFeatures(response)
+  
+  # add NWS alerts and warnings layer
+  map.addLayer new ol.layer.Vector {
+    source: AWSource
+    opacity: 0.8
+  }
+  
+  ###
+  map.addLayer new ol.layer.Tile {
+    source: new ol.source.MapQuest {layer: 'hyb'}
+  }

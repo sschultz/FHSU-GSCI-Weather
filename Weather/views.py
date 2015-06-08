@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.core import exceptions as django_ex
-from django.core import serializers
 from django.utils import timezone
-from django.conf import settings
+from django.template import RequestContext, loader
 import Stations.highchart as highchart
 from Weather.models import Forecast as ForecastModel
 from Weather.models import WMSRadarOverlay as WMSRadarOverlayModel
@@ -16,17 +14,15 @@ from datetime import timedelta
 def celsius2fahrenheit(c):
     return (c*9.0/5.0)+32
 
-
 def radarView(request):
     WMSOverlays = WMSRadarOverlayModel.objects.filter(active=True)
 
-    staticOverlays = None
+    template = loader.get_template('radar.html')
+    context = RequestContext(request, {'wms_overlays': WMSOverlays})
 
-    return render(request, 'radar.html', {
-        'api_key': settings.GOOGLE_API_KEY,
-        'wms_overlays': WMSOverlays,
-        'static_overlays': staticOverlays
-    })
+    response = HttpResponse(template.render(context))
+
+    return response
 
 
 def forecastView(request):
