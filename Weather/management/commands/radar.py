@@ -17,12 +17,11 @@ def init_radar_overlays():
             display_name=RadarLayerName,
             url=r"http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi",
             layers=r"nexrad-n0r-wmst",
-            tile_width=256,
-            tile_height=256,
             update_period=5,
-            format="image/png",
-            coordsys="EPSG:4326",
-            credit="Iowa State University",
+            credit='NEXRAD Composites Courtesy of '
+                   '<a href="http://mesonet.agron.iastate.edu/docs/nexrad_composites/">'
+                   'Iowa State University\'s Iowa Environmental Mesonet</a>',
+            logo="http://mesonet.agron.iastate.edu/images/logo_small.png",
             legend_url=None,
             active=True
         )
@@ -40,12 +39,11 @@ def init_radar_overlays():
             display_name=AltRadarLayerName,
             url=r"http://gis.srh.noaa.gov/arcgis/services/RIDGERadar/MapServer/WMSServer",
             layers=r"0",
-            tile_width=256,
-            tile_height=256,
             update_period=5,
-            format="image/png",
-            coordsys="EPSG:4326",
-            credit="National Weather Service",
+            credit='NEXRAD Composites Courtesy of the '
+                   '<a href="http://www.weather.gov/">'
+                   'National Weather Service</a>',
+            logo="http://w2.weather.gov/images/climate/nwsright.jpg",
             legend_url="http://gis.srh.noaa.gov/arcgis/services/RIDGERadar/MapServer/WMSServer?request=GetLegendGraphic&version=1.1.1&format=image/png&layer=0",
             active=False
         )

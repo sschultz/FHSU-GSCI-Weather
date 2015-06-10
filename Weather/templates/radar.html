@@ -7,7 +7,7 @@
     <link href="{% static "css/ol.css" %}" rel="stylesheet">
 <script type="text/javascript">
 wms_overlays = [{% for layer in wms_overlays %}
-    {'name':'{{layer.display_name}}','credit':'{{layer.credit}}','url':'{{layer.url}}?REQUEST=GetMap&SERVICE=WMS&VERSION={{layer.version}}&STYLES=DEFAULT&LAYERS={{layer.layers}}&FORMAT={{layer.format}}&SRS={{layer.coordsys}}&WIDTH={{layer.tile_width}}&HEIGHT={{layer.tile_height}}&BGCOLOR=0xFFFEFE&TRANSPARENT=TRUE','width':{{layer.tile_width}},'height':{{layer.tile_height}},'update':{{layer.update_period}}},
+    {'name':'{{layer.display_name}}','credit':'{{layer.credit|escapejs}}','logo':'{{layer.logo}}','url':'{{layer.url}}','layers':'{{layer.layers}}','update':{{layer.update_period}}},
 {% endfor %}]
 </script>
     <script type="text/javascript" src="{% static "js/ol.js" %}"></script>
