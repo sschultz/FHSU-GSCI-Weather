@@ -7,7 +7,8 @@
     <link href="{% static "css/ol.css" %}" rel="stylesheet">
 <script type="text/javascript">
 wms_overlays = [{% for layer in wms_overlays %}
-    {'name':'{{layer.display_name}}','credit':'{{layer.credit|escapejs}}','logo':'{{layer.logo}}','url':'{{layer.url}}','layers':'{{layer.layers}}','update':{{layer.update_period}}},
+    {'name':'{{layer.display_name}}','credit':'{{layer.credit|escapejs}}','logo':'{{layer.logo}}',
+    'url':'{{layer.url}}','layers':'{{layer.layers}}','update':{{layer.update_period}}{% if layer.legend_url %},'legend':'{{layer.legend_url|default_if_none:""}}'{% endif %}},
 {% endfor %}]
 </script>
     <script type="text/javascript" src="{% static "js/ol.js" %}"></script>

@@ -60,6 +60,10 @@ $ ->
     latest = genMostRecent layer.update
     ISOdate = latest.toISOString()
     
+    attr = ''
+    attr += '<img class="legend" src="' + layer.legend + '"></img>' if layer.legend
+    attr += layer.credit if layer.credit
+    
     map.addLayer new ol.layer.Tile {
       source: new ol.source.TileWMS {
         url: layer.url
@@ -68,7 +72,7 @@ $ ->
           'TIME': ISOdate
         }
         projection: BaseMapProjection
-        attributions: [ new ol.Attribution {html: '<p>' + layer.credit + '</p>'} ] if layer.credit
+        attributions: [new ol.Attribution {html: attr}]
         logo: layer.logo if layer.logo
       }
     }
@@ -77,4 +81,3 @@ $ ->
   map.addLayer new ol.layer.Tile {
     source: new ol.source.MapQuest {layer: 'hyb'}
   }
-a = 'NEXRAD Composites Courtesy of <a href="http://mesonet.agron.iastate.edu/docs/nexrad_composites/">Iowa State University of Science and Technology</a>'

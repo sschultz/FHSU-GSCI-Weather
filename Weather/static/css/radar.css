@@ -8,6 +8,11 @@
   border: solid 1px;
 }
 
+.legend {
+  float: left;
+  border: solid 1px;
+}
+
 #loop {
   padding: 1em
 }

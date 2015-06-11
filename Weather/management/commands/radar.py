@@ -70,7 +70,7 @@ def init_radar_overlays():
                    '<a href="http://www.weather.gov/">'
                    'National Weather Service</a>',
             logo="http://w2.weather.gov/images/climate/nwsright.jpg",
-            legend_url="http://gis.srh.noaa.gov/arcgis/services/RIDGERadar/MapServer/WMSServer?request=GetLegendGraphic&version=1.1.1&format=image/png&layer=0",
+            legend_url="http://gis.srh.noaa.gov/arcgis/services/watchwarn/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=1",
             active=True,
             order=10
         )
