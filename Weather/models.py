@@ -52,22 +52,33 @@ class Forecast(models.Model):
 class WMSRadarOverlay(models.Model):
     display_name = models.TextField(blank=False, null=False)
     url = models.URLField(blank=False, null=False)
-    layers = models.TextField(blank=False, null=False, help_text="Comma separated list of layers to be pulled")
-
-    version = models.CharField(default="1.1.1", max_length=10, verbose_name="WMS Version")
+    layers = models.TextField(
+        blank=False,
+        null=False,
+        help_text="Comma separated list of layers to be pulled"
+    )
 
     update_period = models.PositiveIntegerField(
         default=5,
         help_text="How long (in minutes) does it take to update"
     )
 
-    active = models.BooleanField(default=False, null=False, help_text="Whether to display this overlay or not")
+    active = models.BooleanField(
+        default=False,
+        null=False,
+        help_text="Whether to display this overlay or not"
+    )
     credit = models.TextField(blank=True, help_text="HTML credits to this datasource")
-    legend_url = models.URLField(null=True, default=None)
-    logo = models.URLField(null=True, default=None)
+    legend_url = models.URLField(null=True, blank=True, default=None)
+    logo = models.URLField(null=True, blank=True, default=None)
+    order = models.PositiveIntegerField(
+        default=5,
+        help_text="Layer draw order, A higher order overlay will be drawn over a lower order overlay"
+    )
 
     def __str__(self):
         return str(self.display_name) + " (%s)" % str(self.layers)
 
     class Meta:
         verbose_name = "WMS Radar Overlay"
+        ordering = ["order"]

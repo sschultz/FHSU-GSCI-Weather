@@ -7,6 +7,7 @@ from Weather.models import WMSRadarOverlay
 def init_radar_overlays():
     RadarLayerName = "NEXRAD Doppler Radar"
     AltRadarLayerName = "NWS RIDGE Radar"
+    WarningsLayerName = "NWS Warnings"
 
     try:
         WMSRadarOverlay.objects.get(display_name=RadarLayerName)
@@ -23,7 +24,8 @@ def init_radar_overlays():
                    'Iowa State University\'s Iowa Environmental Mesonet</a>',
             logo="http://mesonet.agron.iastate.edu/images/logo_small.png",
             legend_url=None,
-            active=True
+            active=True,
+            order=1
         )
         obj.clean()
         obj.save()
@@ -45,13 +47,38 @@ def init_radar_overlays():
                    'National Weather Service</a>',
             logo="http://w2.weather.gov/images/climate/nwsright.jpg",
             legend_url="http://gis.srh.noaa.gov/arcgis/services/RIDGERadar/MapServer/WMSServer?request=GetLegendGraphic&version=1.1.1&format=image/png&layer=0",
-            active=False
+            active=False,
+            order=1
         )
 
         obj.clean()
         obj.save()
 
         print(AltRadarLayerName + " WMS Overlay Entry Added")
+
+    try:
+        WMSRadarOverlay.objects.get(display_name=WarningsLayerName)
+        print(WarningsLayerName + " WMS Overlay already exists.")
+
+    except ObjectDoesNotExist:
+        obj = WMSRadarOverlay.objects.create(
+            display_name=WarningsLayerName,
+            url=r"http://gis.srh.noaa.gov/arcgis/services/watchwarn/MapServer/WMSServer",
+            layers=r"1",
+            update_period=5,
+            credit='Warning Polygons Courtesy of the '
+                   '<a href="http://www.weather.gov/">'
+                   'National Weather Service</a>',
+            logo="http://w2.weather.gov/images/climate/nwsright.jpg",
+            legend_url="http://gis.srh.noaa.gov/arcgis/services/RIDGERadar/MapServer/WMSServer?request=GetLegendGraphic&version=1.1.1&format=image/png&layer=0",
+            active=True,
+            order=10
+        )
+
+        obj.clean()
+        obj.save()
+
+        print(WarningsLayerName + " WMS Overlay Entry Added")
 
     print("Done")
 
