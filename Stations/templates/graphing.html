@@ -4,7 +4,11 @@
 {% block additional-head %}
     <script src="{% static "highcharts.js" %}"></script>
     <script src="{% static "modules/exporting.js" %}"></script>
+{% if debug %}
     <script src="{% static "js/jstree.min.js" %}"></script>
+{% else %}
+    <script src="{% static "js/jstree.js" %}"></script>
+{% endif %}
     <script src="{% static "js/require.js" %}"></script>
     <script src="{% static "js/graphing.js" %}"></script>
     <link href="{% static "themes/default/style.min.css" %}" rel="stylesheet">
