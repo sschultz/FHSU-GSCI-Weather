@@ -8,8 +8,8 @@ expand = (evnt) ->
 shrink = (evnt) ->
   $('#sidebar-panel').animate {width: '0px'}, 400, "swing", () ->
     $('#sidebar-panel').hide 0
-  $('#sidebar-panel').one 'click', expand
-  $('#sidebar-panel').text '>>'
+  $('#sidebar-handle').one 'click', expand
+  $('#sidebar-handle').text '>>'
 
 $ ->
   Highcharts.setOptions {global: { useUTC: false }}
