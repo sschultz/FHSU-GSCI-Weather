@@ -37,7 +37,7 @@ $ ->
     plugins : ["themes", "ui", "checkbox"],
     core: {
       data: {
-        url:' {% url "station-tree" %}',
+        url:'/station-tree/',
         data: (node) ->
           {id: node.id}
       }

@@ -37,6 +37,7 @@ VALUE_TYPE = (
 
 class Station(models.Model):
     name = models.CharField(max_length=254,
+                            unique=True,
                             help_text="Spaces are not allowed. The name "
                                       "should match the field name of the "
                                       "imported data.")
@@ -46,11 +47,15 @@ class Station(models.Model):
     date_installed = models.DateField(null=True, blank=True)
     active = models.BooleanField(default=False)
     contact = models.EmailField(max_length=254, blank=True)
-    logger_interval = models.IntegerField(help_text="Sensor Readings per "
-                                          "Second")
+    logger_interval = models.IntegerField(
+        help_text="Seconds per Sensor Reading"
+    )
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
 
 
 class Sensor(models.Model):
@@ -68,15 +73,46 @@ class Sensor(models.Model):
                                     "front page by default")
 
     def __str__(self):
-        return self.slug
+        return "%s - %s" % (self.station.name, self.slug)
 
     def validate_unique(self, exclude=None):
-        objs = Sensor.objects.filter(
+        # get the number of sensors with the same slug
+        # on this station
+        nObjs_slug = Sensor.objects.filter(
+            slug=self.slug,
+            station=self.station
+        ).exclude(pk=self.pk).count()
+
+        # get the number of sensors with the same name
+        # on this station
+        nObjs_name = Sensor.objects.filter(
             name=self.name,
-            station=self.station)
-        if len(objs) > 0:
-            raise ValidationError('Another sensor with name "' + self.name +
-                                  '" already exists on ' + self.station.name)
+            station=self.station
+        ).exclude(pk=self.pk).count()
+
+        # if a sensor with the same name or slug already exists:
+        # raise the appropriate error.
+        if nObjs_name > 0:
+            raise ValidationError({
+                'name':[ValidationError(
+                    message='Another sensor with name "' + str(self.name) +
+                    '" already exists on the ' + self.station.name + ' station.',
+                    code='unique',
+                    params={},
+                )]
+            })
+        if nObjs_slug > 0:
+            raise ValidationError({
+                'slug':[ValidationError(
+                    message='Another sensor with the slug "' + str(self.slug) +
+                    '" already exists on the ' + self.station.name + ' station.',
+                    code='unique',
+                    params={},
+                )]
+            })
+
+    class Meta:
+        ordering = ['station__name', 'sensor_type', 'name']
 
 
 class SensorData(models.Model):

@@ -67,7 +67,10 @@ def stationTree(request):
     node_id = request.GET.get('id')
     #if root node (build tree base/trunk)
     root_children = []
-    if node_id == '#':
+    if node_id is None:
+        return HttpResponseBadRequest("Bad Request: Must know station")
+
+    elif node_id == '#':
         for station in models.Station.objects.all():
             #create a folder for each station
             child = {}
@@ -76,9 +79,9 @@ def stationTree(request):
             
             #for each station create a subfolder for each type of sensor
             children = []
-            all_sensors = models.Sensor.objects.filter(station=station)
-            all_sensors_distinct_types = [sensor.sensor_type for sensor in
-                            all_sensors.distinct('sensor_type')]
+            all_sensors = models.Sensor.objects.filter(station=station).order_by('sensor_type')
+            all_sensors_distinct_types = [sensor['sensor_type'] for sensor in
+                                          all_sensors.values('sensor_type').distinct()]
 
             sensor_type_full_name = dict(models.SENSOR_TYPE)
             for sensor_type in all_sensors_distinct_types:
@@ -94,6 +97,7 @@ def stationTree(request):
             child['children'] = children
             root_children.append(child)
             nodes = {'children': root_children, 'id': node_id}
+
     else:
         #is a child node
         station_name, sensor_type = node_id.split('::')
