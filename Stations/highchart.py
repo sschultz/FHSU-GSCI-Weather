@@ -41,14 +41,18 @@ def optionsFromObj(sensor_obj, start=None, end=None,
 #        data = data.annotate(val_avg=Avg('val')).values('timestamp__range')
 
     highchart_args = {}
-    highchart_args['title'] = {'text': sensor_obj.description}
+    highchart_args['title'] = {
+        'text': sensor_obj.get_formatted_name()
+    }
 
-    chart = {'renderTo': "%s..%s" % (sensor_obj.station.slug, sensor_obj.slug)}
+    chart = {'renderTo': "%s::%s" % (sensor_obj.station.slug, sensor_obj.slug)}
 
     xAxis = {'title': {'text': "Date/Time CST (GMT-6)"}}
     xAxis['type'] = "datetime"
 
-    yAxis = {'title': {'text': sensor_obj.get_sensor_type_display()}}
+    yAxis = {'title': {
+        'text': sensor_obj.get_sensor_type_display() + ' (%s)' % (str(sensor_obj.data_unit))
+    }}
     lbl = {}
     lbl['format'] = '{value} ' + sensor_obj.data_unit
     yAxis['labels'] = lbl

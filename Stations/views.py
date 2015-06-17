@@ -81,7 +81,7 @@ def stationTree(request):
             for sensor in all_sensors:
                 # all sensor are children of the root station
                 children.append({
-                    'id': station.slug + '::' + sensor.slug,
+                    'id': '.'.join((station.slug, sensor.slug,)),
                     'text': sensor.get_formatted_name(),
                     'children': False
                 })
@@ -91,7 +91,7 @@ def stationTree(request):
                 'text': station.name,
                 'id': station.slug,
                 'state': {'opened': True},
-                'children': children
+                'children': children,
             })
             nodes = {'children': root_children, 'id': node_id}
 
