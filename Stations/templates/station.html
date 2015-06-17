@@ -5,8 +5,7 @@
 {% autoescape off %}
 <script type="text/javascript">
     var url = "{% url 'graph-view' '888' '999' %}";
-    var curStation = '{{selStation.slug}}';
-    var sensorList = JSON.parse('{{default_sensor_list}}');
+    var sensorList = {{default_sensor_list}};
 </script>
 <script src="{% static "js/station.js" %}"></script>
 {% endautoescape %}

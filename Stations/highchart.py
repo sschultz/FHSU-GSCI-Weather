@@ -43,7 +43,7 @@ def optionsFromObj(sensor_obj, start=None, end=None,
     highchart_args = {}
     highchart_args['title'] = {'text': sensor_obj.description}
 
-    chart = {'renderTo': sensor_obj.slug}
+    chart = {'renderTo': "%s..%s" % (sensor_obj.station.slug, sensor_obj.slug)}
 
     xAxis = {'title': {'text': "Date/Time CST (GMT-6)"}}
     xAxis['type'] = "datetime"

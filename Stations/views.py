@@ -5,6 +5,7 @@ import Stations.models as models
 import Stations.highchart as highchart
 from datetime import datetime, timedelta
 from collections import OrderedDict
+from html import escape as html_escape
 import json
 
 
@@ -72,60 +73,33 @@ def stationTree(request):
 
     elif node_id == '#':
         for station in models.Station.objects.all():
-            #create a folder for each station
-            child = {}
-            child['text'] = station.name
-            child['state'] = {'opened': True}
-            
-            #for each station create a subfolder for each type of sensor
+            # for each station create a subfolder for each type of sensor
             children = []
             all_sensors = models.Sensor.objects.filter(station=station).order_by('sensor_type')
-            all_sensors_distinct_types = [sensor['sensor_type'] for sensor in
-                                          all_sensors.values('sensor_type').distinct()]
 
             sensor_type_full_name = dict(models.SENSOR_TYPE)
-            for sensor_type in all_sensors_distinct_types:
-                sensor_type_child = {}
-                
-                sensor_type_child['id'] = station.name + '::' + sensor_type
-                sensor_type_child['text'] = sensor_type_full_name[sensor_type]
-                sensor_type_child['children'] = True
-                sensor_type_child['state'] = ['closed']
-                
-                children.append(sensor_type_child)
+            for sensor in all_sensors:
+                # all sensor are children of the root station
+                children.append({
+                    'id': station.slug + '::' + sensor.slug,
+                    'text': sensor.get_formatted_name(),
+                    'children': False
+                })
 
-            child['children'] = children
-            root_children.append(child)
+            # stations are roots
+            root_children.append({
+                'text': station.name,
+                'id': station.slug,
+                'state': {'opened': True},
+                'children': children
+            })
             nodes = {'children': root_children, 'id': node_id}
 
     else:
-        #is a child node
-        station_name, sensor_type = node_id.split('::')
-        station = models.Station.objects.get(name=station_name)
-        sensors = models.Sensor.objects.filter(station=station,
-                                               sensor_type=sensor_type)
-        #for each sensor
-        for sensor in sensors:
-            child = {}
-            child['id'] = station.name + ".." +sensor.name
-            child['text'] = sensor.name
-            root_children.append(child)
-        nodes = root_children
+        # is a child node
+        return HttpResponseBadRequest("Bad Request: No Children Nodes")
     
     return HttpResponse(json.dumps(nodes), content_type="application/json")
-
-
-def defaultSensorView(request, station):
-    """Get a list of default sensors shown on front page of station view"""
-    station = station.lower()
-    sensors = []
-
-    sensor_objs = models.Sensor.objects.filter(station=station,
-                                               frontPage=True)
-    for sensor in sensor_objs:
-        sensors.append(sensor.slug)
-
-    return HttpResponse(json.dumps(sensors), content_type="application/json")
 
 
 def highchartView(request, station, sensor):
@@ -193,18 +167,16 @@ def stationView(request, station=''):
         return stationView(request)
 
     #get default sensors to show on initial station page
-    curSensors = models.Sensor.objects.filter(station=station_obj,
+    sensor_list = models.Sensor.objects.filter(station=station_obj,
                                               frontPage=True)
 
     #if no sensor matches list of sensor names
     #then return default station page
-    if len(curSensors) == 0:
+    if sensor_list.count() == 0:
         return stationView(request)
 
-    sensor_list = models.Sensor.objects.filter(station=station_obj,
-                                               frontPage=True)
     #convert from a list of objects to a JSON array
-    sensor_list = [sensor.slug for sensor in sensor_list]
+    sensor_list = [(sensor.station.slug, sensor.slug) for sensor in sensor_list]
     sensor_list = json.dumps(sensor_list)
 
     return render(request, "station.html",

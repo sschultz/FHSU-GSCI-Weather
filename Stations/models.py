@@ -44,12 +44,33 @@ class Station(models.Model):
     description = models.TextField(blank=True)
     slug = models.SlugField(primary_key=True)
     location = models.TextField(blank=True)
+    latitude = models.DecimalField(
+        blank=True, null=True,
+        max_digits=10,
+        decimal_places=6,
+        help_text="Datum: WGS84",
+        default=None
+    )
+    longitude = models.DecimalField(
+        blank=True, null=True,
+        max_digits=10,
+        decimal_places=6,
+        help_text="Datum: WGS84",
+        default=None
+    )
+    elevation = models.IntegerField(
+        blank=True, null=True,
+        help_text="Elevation of MET base in meters from sea level"
+    )
     date_installed = models.DateField(null=True, blank=True)
     active = models.BooleanField(default=False)
     contact = models.EmailField(max_length=254, blank=True)
     logger_interval = models.IntegerField(
         help_text="Seconds per Sensor Reading"
     )
+
+    def clean_longitude(self):
+        pass
 
     def __str__(self):
         return self.name
@@ -59,12 +80,25 @@ class Station(models.Model):
 
 
 class Sensor(models.Model):
-    name = models.CharField(max_length=80)
+    name = models.CharField(
+        max_length=80,
+        help_text="Identifier that relates to the import method (e.g. csv field name)"
+    )
+    display_name = models.CharField(
+        max_length=80,
+        blank=True, null=True,
+        default=None,
+        help_text="Sensor name will be used as display value if this value is empty"
+    )
     sensor_type = models.CharField(max_length=10, choices=SENSOR_TYPE)
     description = models.TextField(blank=True)
     station = models.ForeignKey(Station)
     data_unit = models.CharField(max_length=10)
-    height = models.IntegerField(null=True, blank=True)
+    height = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="height of instrument above the MET base"
+    )
     height_unit = models.CharField(max_length=2, choices=DISTANCE_UNITS,
                                    blank=True)
     slug = models.SlugField()
@@ -74,6 +108,22 @@ class Sensor(models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.station.name, self.slug)
+
+    def get_display_field(self):
+        if self.display_name is None:
+            return self.name
+        return self.display_name
+
+    def get_formatted_name(self):
+        fmt = "%s"
+        if self.height is None or self.display_name is None:
+            return fmt % str(self.get_display_field())
+        fmt += " (%i%s)"
+        return fmt % (
+            str(self.get_display_field()),
+            int(self.height),
+            str(self.height_unit)
+        )
 
     def validate_unique(self, exclude=None):
         # get the number of sensors with the same slug
@@ -129,9 +179,20 @@ class SensorData(models.Model):
         objs = SensorData.objects.filter(
             timestamp=self.timestamp,
             sensor=self.sensor,
-            val_type=self.val_type)
-        if len(objs) > 0:
-            raise ValidationError("Overlapping data at same time '" +
-                                  self.timestamp + "' on sensor " +
-                                  self.sensor.name +
-                                  ' (' + self.sensor.slug + ')')
+            val_type=self.val_type
+        )
+
+        # Ignore self if part of table
+        objs = objs.exclude(pk=self.pk)
+
+        if objs.count() > 0:
+            raise ValidationError({
+                '':[ValidationError(
+                    message="Overlapping data at same time '" +
+                            str(self.timestamp) + "' on sensor " +
+                            self.sensor.name +
+                            ' (' + self.sensor.slug + ')',
+                    code='unique',
+                    params={}
+                )]
+            })

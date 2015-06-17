@@ -30,11 +30,6 @@ urlpatterns = patterns(
     url(r'^(?i)station-list/$', 'Stations.views.stationListView',
         name='station-list'),
 
-    #/station-front/?
-    url(r'^(?i)station-front/(?P<station>.+)/$',
-        'Stations.views.defaultSensorView',
-        name='station-front-list'),
-
     #/graph/?
     url(r'^(?i)graph/(?P<station>.+)/(?P<sensor>.+)/$',
         'Stations.views.highchartView', name='graph-view'),
