@@ -9,7 +9,6 @@ class StationAdmin(admin.ModelAdmin):
 class SensorAdmin(admin.ModelAdmin):
         repopulated_fields = {
             'slug': ('sensor_type', 'height',),
-            'display_name': ('abc',)
         }
 
 # Register your models here.
