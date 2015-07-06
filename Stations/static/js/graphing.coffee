@@ -1,16 +1,3 @@
-expand = (evnt) ->
-  $('#sidebar-panel').show 0
-  $('#sidebar-panel').animate {width: '400px'}
-
-  $('#sidebar-handle').one 'click', shrink
-  $('#sidebar-handle').text '<<'
-
-shrink = (evnt) ->
-  $('#sidebar-panel').animate {width: '0px'}, 400, "swing", () ->
-    $('#sidebar-panel').hide 0
-  $('#sidebar-handle').one 'click', expand
-  $('#sidebar-handle').text '>>'
-
 $ ->
   Highcharts.setOptions {global: { useUTC: false }}
   start = new Date()
@@ -30,9 +17,15 @@ $ ->
   end.getDate() + '-' +
   end.getFullYear()
 
-  $('#sidebar-panel').hide 0
-  $('#sidebar-handle').one 'click', expand
+  $('#sidebar-handle').click ->
+    $('#sidebar-panel').animate {width: "toggle"}, "slow", "swing", ->
+      if $('#sidebar-panel').css('display') == 'none'
+        $('#sidebar-handle').html '<table><tr><td>&gt;&gt;</td></tr></table>'
+      else
+        $('#sidebar-handle').html '<table><tr><td>&lt;&lt;</td></tr></table>'
+
   $.jstree.defaults.core.data = true
+  
   $('#sidebar-panel').jstree {
     plugins : ["themes", "ui", "checkbox"],
     core: {

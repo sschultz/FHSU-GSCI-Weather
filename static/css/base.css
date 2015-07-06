@@ -1,14 +1,59 @@
-body {position:relative}
-#sidebar {position: absolute;height:300px; left:0em; top:3em;
-          z-index:1}
-#sidebar-panel {background-color:#D0D0D0; width:0;height:100%;
-                font-size: 10pt; border:1px solid; 
-                float:left}
-#sidebar-handle {background-color:#D0D0D0;
-                 width:2em;height:100%;
-                 font-size: 8pt; border:1px solid;
-                 float:left; cursor:pointer; line-height:270px;
-                 text-align:center}
-.sensor-graph {min-width:200px;height:200px}
-#range {margin:0 0 0 3em; position: absolute; left:0em; top:1.5em}
-#graphs {margin:2em; z-index:2}
+body {
+    position: relative;
+}
+
+#sidebar {
+    position: absolute;
+    left: 0em;
+    top: 3em;
+    width: 800px;
+    float: left;
+    z-index: 1;
+    overflow: hidden;
+}
+
+#sidebar-panel {
+    background-color: #D0D0D0;
+    height: 100%;
+    font-size: 10pt;
+    border: 1px solid;
+    display: none;
+    float: left;
+    padding-bottom: 500em;
+    margin-bottom: -500em;
+}
+
+#sidebar-handle {
+    background-color: #D0D0D0;
+    width: 2em;
+    height: 100%;
+    font-size: 8pt;
+    border: 1px solid;
+    cursor: pointer;
+    margin-right: -1px; /* Thank you IE */
+    padding-bottom: 500em;
+    margin-bottom: -500em;
+    min-height: 300px;
+    float: left;
+}
+
+#sidebar-handle table {
+    height: 100%
+    border: 3px solid;
+}
+
+.sensor-graph {
+    min-width: 200px;
+    height: 200px;
+}
+#range {
+    margin: 0 0 0 3em;
+    position: absolute;
+    left: 0em;
+    top: 1.5em;
+}
+
+#graphs {
+    margin: 2em;
+    z-index: 2;
+}
