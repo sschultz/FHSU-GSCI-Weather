@@ -24,6 +24,10 @@ genMostRecent = (updatePeriod) ->
   return date
   
 $ ->
+  # set legend box up
+  $("#legends").click ->
+    $("#legends-panel").slideToggle("slow")
+  
   # print radar time
   latest = genMostRecent(5)
   $(".timestamp").text " " +
@@ -61,8 +65,9 @@ $ ->
     ISOdate = latest.toISOString()
     
     attr = ''
-    attr += '<img class="legend" src="' + layer.legend + '"></img>' if layer.legend
     attr += layer.credit if layer.credit
+    
+    $("#legends-panel").append('<img class="legend" src="' + layer.legend + '"></img>') if layer.legend
     
     map.addLayer new ol.layer.Tile {
       source: new ol.source.TileWMS {

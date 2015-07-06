@@ -8,9 +8,24 @@
   border: solid 1px;
 }
 
-.legend {
-  float: left;
+#legends {
   border: solid 1px;
+  width: 800px;
+}
+
+#legends-panel {
+  padding: 0em 1em;
+  max-height: 100px;
+  display: none;
+}
+
+#legends-handle {
+  padding: 0em 1em;
+  background-color: #DDDDDD;
+}
+
+#legends-panel img {
+  max-height: 100%;
 }
 
 #loop {
