@@ -1,17 +1,18 @@
 DEPENDENCIES:
- - Python
- - Django 1.6
- - cron
- - PostgreSQL
+ - Python3
+ - Django 1.6 or newer
  - coffee-script
+ - Django compatible DBMS such as PostSQL (default is SQLite)
 
 Python Modules:
- - python-crontab
- - python module for chosen database
  - pycampbellcr1000 for Campbell data logger support
- - psycopg2 for Django Postgres integration
  - suds for SOAP client
+ - *Python module for chosen DBMS
+
+* Default DBMS (SQLite) does not require any extra modules.
  
 When installing onto a new system, the database and website user
 must be created via database console manually.  Then the settings.py
 file must be updated with the created user and database.
+
+See Django documentation for settings.py
