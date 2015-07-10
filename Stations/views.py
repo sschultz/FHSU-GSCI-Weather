@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 import Stations.models as models
 import Stations.highchart as highchart
+from Stations.forms import CreateAccountForm
 from datetime import datetime, timedelta
 from collections import OrderedDict
 from html import escape as html_escape
@@ -156,26 +159,26 @@ def stationView(request, station=''):
                 return HttpResponseNotFound('<h1>Default station not '
                                             'found</h1>')
         except:
-            #if ...objects.all() returns None
-            #then ...objects.all()[0] will cause an exception
+            # if ...objects.all() returns None
+            # then ...objects.all()[0] will cause an exception
             return HttpResponseNotFound('<h1>Default station not found</h1>')
     else:
         station_obj = models.Station.objects.get(slug=station)
 
-    #if station is not found then return default station page
+    # if station is not found then return default station page
     if station_obj is None:
         return stationView(request)
 
-    #get default sensors to show on initial station page
+    # get default sensors to show on initial station page
     sensor_list = models.Sensor.objects.filter(station=station_obj,
                                               frontPage=True)
 
-    #if no sensor matches list of sensor names
-    #then return default station page
+    # if no sensor matches list of sensor names
+    # then return default station page
     if sensor_list.count() == 0:
         return stationView(request)
 
-    #convert from a list of objects to a JSON array
+    # convert from a list of objects to a JSON array
     sensor_list = [(sensor.station.slug, sensor.slug) for sensor in sensor_list]
     sensor_list = json.dumps(sensor_list)
 
@@ -183,3 +186,21 @@ def stationView(request, station=''):
                   {'stations': station_obj_all,
                    'selStation': station_obj,
                    'default_sensor_list': sensor_list})
+
+
+@login_required(login_url='/login/')
+def downloadView(request):
+    return HttpResponse('Logged in!!!')
+
+
+def createAccountView(request):
+    if request.method == 'POST':
+        # Handle Post Request
+        form = CreateAccountForm(request.POST)
+        if form.is_valid():
+            # TODO: Create User
+            return redirect('download-view')
+    else:
+        # Create a blank form initially
+        form = CreateAccountForm()
+    return render(request, 'registration/create.html', {'form': form})

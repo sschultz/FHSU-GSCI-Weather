@@ -57,3 +57,7 @@ body {
     margin: 2em;
     z-index: 2;
 }
+
+#logout {
+    float: right;
+}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>The station data is free for anyone to download.
+But first, please tell us a little about yourself and your interests.</p>
+<p>Once you have created an account, you may login and download data from our weather stations whenever you wish</p>
+<form method="post" action="{% url 'create_account' %}">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+<input type="submit" value="submit" />
+</form>
+{% endblock %}

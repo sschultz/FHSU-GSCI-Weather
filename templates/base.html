@@ -16,11 +16,17 @@
 </head>
 <body>
 {% block navbar %}<div id='navbar'>
+{% if user.is_authenticated %}
+<div id='logout'>
+    <a href="">Logout</a>
+</div>
+{% endif %}
 <table>
     <tr>
         <td><a href="{% url 'homepage-view' %}">Home</a></td>
         <td><a href="{% url 'radar-view' %}">Radar</a></td>
-        <td><a href="{% url 'station-view' %}">Stations</a></td>
+        <td><a href="{% url 'station-view' %}">Station Monitor</a></td>
+        <td><a href="{% url 'download-view' %}">Data Download</a></td>
     </tr>
 </table>
 </div>{% endblock%}
